@@ -1,0 +1,24 @@
+State Machine: IA de los NPCs
+- Patrol: Waypoints (Patrón de movimiento: A -> B -> B -> A)
+- Idle: Al llegar a A, se activa.
+- Siempre debe utilizar ObstacleAvoidance
+	Tipos:
+		1. RunAway: Utilizando Steering Behaviour hacer Flee (Escape al ser visto por el jugador) / Evade (Evita ser visto al ver al jugador, predice trayectoria y escapa).
+		2. Attack/Interact: 
+			- Utilizando Steering Behaviour hacer Seek (Busca con la mirada) / Pursuit (Al ver al jugador, va hacia él y predice su comportamiento).
+			- Si detecta que el jugador esta en su rango de visión (Line of Sight), alcance de golpe (Range) y que no hay un obstáculo en el medio, ejecuta el ataque.
+			- Si golpea al jugador, termina el juego.
+
+Decision Tree: Player
+- Controles: Flechas
+- Idle: 
+- Walk: 
+- Interact: Al presionar espacio, si se tiene un RunAwayEnemy en rango, se obtiene un punto.
+
+UI:
+- Indicador 0/4, se gana al llenarlo.
+- Enemigos azules (runAway), deben ser capturados.
+- Enemigo rojo (attack), debe ser evitado.
+
+Lista de ideas que podrían ser descartadas:
+- Ruleta en los waypoints y stack para hacer el camino inverso.
