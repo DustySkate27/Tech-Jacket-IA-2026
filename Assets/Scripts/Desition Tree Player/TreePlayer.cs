@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class TreePlayer : MonoBehaviour
 {
@@ -8,18 +9,21 @@ public class TreePlayer : MonoBehaviour
 
     private float horizontal;
     private float vertical;
-    private float speed = 10;
+    [SerializeField] private float speed = 100;
 
     private QuestionNode root;
+    private Rigidbody rb;
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+
         ActionNode idle = new ActionNode(Idle);
         ActionNode walk = new ActionNode(Walk);
         ActionNode interact = new ActionNode(Interact);
 
         QuestionNode isWalking = new QuestionNode(IsWalking, walk, idle);
         QuestionNode isInteracting = new QuestionNode(IsInteracting, interact, isWalking);
- 
+
 
         root = isInteracting;
     }
@@ -44,14 +48,18 @@ public class TreePlayer : MonoBehaviour
     private void Walk()
     {
         Vector3 direction = new Vector3(horizontal, 0, vertical);
-        transform.Translate(direction * speed * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(0,0,0);
-    }
 
+        direction.Normalize();
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        rb.velocity = direction * speed;
+        rb.rotation = targetRotation;
+    }
     private void Interact()
     {
-        Debug.Log("interact");
+        Debug.Log("Objetivo cumplido.");
     }
 
 
 }
+

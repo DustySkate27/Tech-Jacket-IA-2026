@@ -25,7 +25,8 @@ public class LineOfSight : MonoBehaviour
         Vector3 dirToTarget = target.position - Origin;
         return !Physics.Raycast(Origin, dirToTarget.normalized, dirToTarget.magnitude, obsMask);
     }
-    Vector3 Origin
+
+    protected Vector3 Origin
     {
         get
         {
@@ -33,7 +34,7 @@ public class LineOfSight : MonoBehaviour
             return reference.position;
         }
     }
-    Vector3 Forward
+    protected Vector3 Forward
     {
         get
         {

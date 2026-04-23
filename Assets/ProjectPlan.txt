@@ -16,9 +16,8 @@ Decision Tree: Player
 - Interact: Al presionar espacio, si se tiene un RunAwayEnemy en rango, se obtiene un punto.
 
 UI:
-- Indicador 0/4, se gana al llenarlo.
-- Enemigos azules (runAway), deben ser capturados.
-- Enemigo rojo (attack), debe ser evitado.
+- Enemigo azul (runAway), debe ser capturado.
+- Enemigos rojos (attack), deben ser evitados.
 
 Lista de ideas que podrían ser descartadas:
 - Ruleta en los waypoints y stack para hacer el camino inverso.

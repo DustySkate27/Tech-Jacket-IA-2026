@@ -13,11 +13,6 @@ public class StateMachine<T>
         currentState = state;
     }
 
-    //public void AddState(IState<T> state, T stateValue)
-    //{
-    //    states.Add(stateValue, state);
-    //}
-
     public void Update() => currentState.Execute();
 
     public void ChangeState(T input)
