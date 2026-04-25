@@ -16,6 +16,7 @@ public class EnemyPatrolState : State<EnemyStates>
         this.fsm = fsm;
         currentWP = fsm.currentWP;
         stackWP = new Stack<Transform>();
+        
     }
 
     public override void Execute()
@@ -31,10 +32,11 @@ public class EnemyPatrolState : State<EnemyStates>
             if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.1f)
             {
                 Vector3 dir = fsm.wayPoints[currentWP].position - fsm.transform.position;
-                dir = fsm.obsAvoid.GetDir(dir).normalized;
-                fsm.transform.position += dir * fsm.speed * Time.deltaTime;
+                dir = fsm.obsAvoid.GetDir(dir);
+                dir.y = 0;
+                dir = dir.normalized;
+                fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
                 fsm.transform.forward = dir;
-
             }
             else
             {
@@ -62,12 +64,12 @@ public class EnemyPatrolState : State<EnemyStates>
             {
                 if (Vector3.Distance(fsm.transform.position, currentStackPos.position) > 0.5f)
                 {
-                    Vector3 dir = currentStackPos.position - fsm.transform.position;
-                    dir = fsm.obsAvoid.GetDir(dir).normalized;
-                    fsm.transform.position += dir * fsm.speed * Time.deltaTime;
+                    Vector3 dir = fsm.wayPoints[currentWP].position - fsm.transform.position;
+                    dir = fsm.obsAvoid.GetDir(dir);
+                    dir.y = 0;
+                    dir = dir.normalized;
+                    fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
                     fsm.transform.forward = dir;
-
-
                 }
                 else
                     currentStackPos = null;
