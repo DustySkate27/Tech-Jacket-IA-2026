@@ -14,7 +14,7 @@ public class EnemyObstacleAvoidance
     {
         hitBox = transform; //transform del objeto
         _radius = radius; //Radio máximo
-        _radius = Mathf.Min(_radius, 1); //Radio mínimo
+        //_radius = Mathf.Min(_radius, 1); //Radio mínimo
         _angle = angle; //grados
         _personalArea = personalArea; //
         _obsMask = obsMask; //Con lo que puede chocar
@@ -62,8 +62,12 @@ public class EnemyObstacleAvoidance
         else
             newDir = -Vector3.Cross(hitBox.up, dirToClosestPoint);
 
-        Debug.Log("NewDir" + newDir);
         Debug.DrawRay(hitBox.position, newDir, Color.red);
+        Debug.DrawRay(hitBox.position, currentSpeed * 3, Color.green);
+        Debug.DrawRay(hitBox.position, newDir * 3, Color.red);
+        
+
+        Debug.Log("Avoiding obstacle!");
         return Vector3.Lerp(currentSpeed, newDir, (_radius - Mathf.Clamp(nearCollDistance - _personalArea, 0, _radius))/_radius);
     }
 }

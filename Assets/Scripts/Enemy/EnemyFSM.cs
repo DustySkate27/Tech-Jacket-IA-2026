@@ -24,13 +24,12 @@ public class EnemyFSM : MonoBehaviour
 
     public bool isEscaper;
 
-    private EnemyObstacleAvoidance obsAvoid;
+    public EnemyObstacleAvoidance obsAvoid;
     public float hitboxRadius;
     public float hitboxAngle;
     public float hitboxOffset;
     public int maxAvoidableObs;
     public LayerMask obsMask;
-    private Vector3 avoidDirection;
 
 
     public LineOfSight ViewLoS => viewLoS;
@@ -78,10 +77,4 @@ public class EnemyFSM : MonoBehaviour
         _sm.Update();
     }
 
-    private void FixedUpdate()
-    {
-        avoidDirection = obsAvoid.GetDir(avoidDirection);
-
-        transform.position += avoidDirection * Time.deltaTime;
-    }
 }
