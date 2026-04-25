@@ -50,6 +50,10 @@ public class EnemyFSM : MonoBehaviour
 
         idle.AddTransition(patrol, EnemyStates.Patrol);
 
+        patrol.AddTransition(idle, EnemyStates.Idle);
+        patrol.AddTransition(specificSee, EnemyStates.SpecificSee);
+        patrol.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
+
         idle.AddTransition(specificSee, EnemyStates.SpecificSee);
         idle.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
 
