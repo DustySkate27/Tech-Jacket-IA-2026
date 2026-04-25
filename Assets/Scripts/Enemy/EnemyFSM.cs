@@ -1,5 +1,4 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum EnemyStates  
 {
@@ -25,6 +24,15 @@ public class EnemyFSM : MonoBehaviour
 
     public bool isEscaper;
 
+    private EnemyObstacleAvoidance obsAvoid;
+    public float hitboxRadius;
+    public float hitboxAngle;
+    public float hitboxOffset;
+    public int maxAvoidableObs;
+    public LayerMask obsMask;
+    private Vector3 avoidDirection;
+
+
     public LineOfSight ViewLoS => viewLoS;
     public LineOfSight SpecificLoS => specificLoS;
 
@@ -32,9 +40,10 @@ public class EnemyFSM : MonoBehaviour
     {
         _sm = new StateMachine<EnemyStates>();
 
+        obsAvoid = new EnemyObstacleAvoidance(transform, hitboxRadius, hitboxAngle, hitboxOffset, obsMask, maxAvoidableObs);
+
         State<EnemyStates> idle = new EnemyIdleState(this, _sm);
         State<EnemyStates> patrol = new EnemyPatrolState(this, _sm);
-        //State<EnemyStates> obstacleAvoidance;
 
         State<EnemyStates> specificSee = null;
         State<EnemyStates> specificHaveBeenSeen = null;
@@ -67,5 +76,12 @@ public class EnemyFSM : MonoBehaviour
     private void Update()
     {
         _sm.Update();
+    }
+
+    private void FixedUpdate()
+    {
+        avoidDirection = obsAvoid.GetDir(avoidDirection);
+
+        transform.position += avoidDirection * Time.deltaTime;
     }
 }
