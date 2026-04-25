@@ -6,6 +6,6 @@ public interface IState<T>
     public void Execute();
     public void Sleep();
 
-    void AddTransition( IState<T> state, T input);
+    public void AddTransition( IState<T> state, T input);
     IState<T> GetTransition(T input);
 }

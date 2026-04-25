@@ -4,6 +4,7 @@ using UnityEngine;
 public class StateMachine<T>
 {
     private IState<T> currentState;
+    private Dictionary<T, IState<T>> states = new();
 
     public IState<T> CurrentState => currentState;
 
@@ -13,17 +14,20 @@ public class StateMachine<T>
         currentState = state;
     }
 
+    public void AddState(IState<T> state, T stateValue)
+    {
+        states.Add(stateValue, state);
+    }
+
     public void Update() => currentState.Execute();
 
-    public void ChangeState(T input)
+    public void ChangeState(T newState)
     {
-        var newState = currentState.GetTransition(input);
-        if (newState != null)
+        if (states.TryGetValue(newState, out IState<T> stateValue))
         {
             currentState.Sleep();
-            currentState = newState;
+            currentState = stateValue;
             currentState.Awake();
         }
-
     }
 }
