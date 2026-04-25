@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyEvadeState<T> : State<T>
+public class EnemyEvadeState : State<EnemyStates>
 {
     private EnemyFSM fsm;
-    public EnemyEvadeState(EnemyFSM fsm, StateMachine<T> sm) : base(sm)
+    public EnemyEvadeState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         this.fsm = fsm;
     }

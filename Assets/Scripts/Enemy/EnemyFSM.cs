@@ -14,6 +14,7 @@ public class EnemyFSM : MonoBehaviour
 {
     [SerializeField] public Transform target;
 
+    public int speed;
     [SerializeField] public Transform[] wayPoints;
     public int currentWP = 0;
 
@@ -24,7 +25,7 @@ public class EnemyFSM : MonoBehaviour
 
     public bool isEscaper;
 
-    public LineOfSight ViewLoS => ViewLoS;
+    public LineOfSight ViewLoS => viewLoS;
     public LineOfSight SpecificLoS => specificLoS;
 
     private void Start()
@@ -33,15 +34,15 @@ public class EnemyFSM : MonoBehaviour
 
         State<EnemyStates> idle = new EnemyIdleState(this, _sm);
         State<EnemyStates> patrol = new EnemyPatrolState(this, _sm);
-        State<EnemyStates> obstacleAvoidance;
+        //State<EnemyStates> obstacleAvoidance;
 
         State<EnemyStates> specificSee = null;
         State<EnemyStates> specificHaveBeenSeen = null;
 
         if (isEscaper)
         {
-            specificSee = new EnemyEvadeState<EnemyStates>(this, _sm);
-            specificHaveBeenSeen = new EnemyFleeState<EnemyStates>(this, _sm);
+            specificSee = new EnemyEvadeState(this, _sm);
+            specificHaveBeenSeen = new EnemyFleeState(this, _sm);
         }
         else
         {
@@ -61,5 +62,10 @@ public class EnemyFSM : MonoBehaviour
         specificHaveBeenSeen.AddTransition(idle, EnemyStates.Idle);
 
         _sm.SetCurrent(idle);
+    }
+
+    private void Update()
+    {
+        _sm.Update();
     }
 }

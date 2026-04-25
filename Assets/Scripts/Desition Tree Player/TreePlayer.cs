@@ -42,7 +42,7 @@ public class TreePlayer : MonoBehaviour
 
     private void Idle()
     {
-        Debug.Log("idle");
+        
     }
 
     private void Walk()
