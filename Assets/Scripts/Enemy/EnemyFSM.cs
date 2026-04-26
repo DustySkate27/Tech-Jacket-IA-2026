@@ -36,8 +36,9 @@ public class EnemyFSM : MonoBehaviour
 
     public float maxForce = 5f;
     public float rotationSpeed = 5f;
+    public float predictionFactor = 0.05f;
 
-    public float slowingRadius = 3f;
+    public float slowingRadius = 15f;
 
 
     public LineOfSight ViewLoS => viewLoS;
@@ -55,6 +56,9 @@ public class EnemyFSM : MonoBehaviour
         State<EnemyStates> specificSee = null;
         State<EnemyStates> specificHaveBeenSeen = null;
 
+        State<EnemyStates> pursuit = null;
+        State<EnemyStates> arrive = null;
+
         if (isEscaper)
         {
             specificSee = new EnemyEvadeState(this, _sm);
@@ -62,22 +66,34 @@ public class EnemyFSM : MonoBehaviour
         }
         else
         {
-
+            pursuit = new EnemyPursuitState(this, _sm);
+            arrive = new EnemyArriveState(this, _sm);
         }
 
         idle.AddTransition(patrol, EnemyStates.Patrol);
 
         patrol.AddTransition(idle, EnemyStates.Idle);
-        patrol.AddTransition(specificSee, EnemyStates.SpecificSee);
-        patrol.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
 
-        idle.AddTransition(specificSee, EnemyStates.SpecificSee);
-        idle.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
+        if (isEscaper)
+        {
+            patrol.AddTransition(specificSee, EnemyStates.SpecificSee);
+            patrol.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
 
-        specificSee.AddTransition(idle, EnemyStates.Idle);
-        specificHaveBeenSeen.AddTransition(idle, EnemyStates.Idle);
+            idle.AddTransition(specificSee, EnemyStates.SpecificSee);
+            idle.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
 
-        _sm.SetCurrent(idle);
+            specificSee.AddTransition(idle, EnemyStates.Idle);
+            specificHaveBeenSeen.AddTransition(idle, EnemyStates.Idle);
+        }
+        
+        if (!isEscaper)
+        {
+            pursuit.AddTransition(arrive, EnemyStates.Arrive);
+            arrive.AddTransition(pursuit, EnemyStates.Persuit);
+        }
+        
+
+        _sm.SetCurrent(pursuit);
     }
 
     private void Update()

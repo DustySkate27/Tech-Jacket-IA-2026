@@ -34,13 +34,15 @@ public class EnemyArriveState : State<EnemyStates>
             desiredSpeed = fsm.speed;
         }
 
+        Debug.Log(desiredSpeed);
+
         var desired = toTarget.normalized * desiredSpeed;
 
         var steer = desired - currentSpeed;
         steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
 
         currentSpeed += steer * Time.deltaTime;
-        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
+        currentSpeed = currentSpeed = Vector3.ClampMagnitude(currentSpeed, desiredSpeed);
 
         fsm.transform.position += currentSpeed * Time.deltaTime;
 
@@ -59,7 +61,7 @@ public class EnemyArriveState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 0.5f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 20f)
         {
             _sm.ChangeState(EnemyStates.Persuit);
         }
