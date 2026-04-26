@@ -6,6 +6,10 @@ public class EnemyPursuitState : State<EnemyStates>
     private EnemyFSM fsm;
     private Vector3 currentSpeed;
 
+    public float avoidanceDistance = 15f;  // que tan lejos detecta obstaculos
+    public float avoidanceRadius = 10f; // grosor del SphereCast
+    public float avoidanceWeight = 3f;  // que tan fuerte es la evasion
+
     public EnemyPursuitState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         this.fsm = fsm;
@@ -46,6 +50,9 @@ public class EnemyPursuitState : State<EnemyStates>
         var dir = futurePosition - fsm.transform.position;
         var desired = dir.normalized * fsm.speed;
 
+        var avoidance = ComputeAvoidance();
+        desired += avoidance;
+
         var steer = desired - currentSpeed;
         steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
 
@@ -67,6 +74,50 @@ public class EnemyPursuitState : State<EnemyStates>
 
 
         TargetDistanceCheck();
+    }
+
+    private Vector3 ComputeAvoidance()
+    {
+        var forward = fsm.transform.forward;
+        var right = fsm.transform.right;
+
+        var directions = new Vector3[]
+        {
+        forward,
+        (forward + right * 0.5f).normalized,
+        (forward - right * 0.5f).normalized
+        };
+
+        var totalAvoidance = Vector3.zero;
+        bool found = false;
+
+        foreach (var dir in directions)
+        {
+            var hits = Physics.SphereCastAll(
+                fsm.transform.position,
+                avoidanceRadius,
+                dir,
+                avoidanceDistance,
+                fsm.obsMask);
+
+            foreach (var hit in hits)
+            {
+                var avoidDir = Vector3.Cross(dir, Vector3.up).normalized;
+
+                if (Vector3.Dot(avoidDir, hit.normal) < 0)
+                    avoidDir = -avoidDir;
+
+                var strength = 1f - (hit.distance / avoidanceDistance);
+
+                totalAvoidance += avoidDir * fsm.speed * strength * avoidanceWeight;
+                found = true;
+            }
+        }
+
+        if (!found) return Vector3.zero;
+
+        // Promediar para evitar que multiples hits se cancelen entre si
+        return Vector3.ClampMagnitude(totalAvoidance, fsm.speed * avoidanceWeight);
     }
 
     private void TargetDistanceCheck()
