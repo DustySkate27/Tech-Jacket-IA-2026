@@ -409,7 +409,7 @@ GameObject:
   m_Layer: 0
   m_Name: wayPoint1 (1)
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -569,7 +569,7 @@ GameObject:
   m_Layer: 0
   m_Name: wayPoint0
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -858,7 +858,7 @@ Transform:
   m_GameObject: {fileID: 507783188}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.36943817, y: 36.55, z: 25.886265}
+  m_LocalPosition: {x: 2.45, y: 36.55, z: 25.886265}
   m_LocalScale: {x: 15.567729, y: 13.516, z: 13.516}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1164,8 +1164,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1349106049}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &919284567
-SphereCollider:
+--- !u!65 &919284567
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1183,8 +1183,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.6
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: -0.000000029802322, z: 0}
 --- !u!1 &954816298
 GameObject:
   m_ObjectHideFlags: 0
@@ -1614,15 +1614,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1251734262}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 53.5, y: 5.89, z: -45.89}
+  m_LocalRotation: {x: -0.00077204616, y: 0, z: -0, w: 0.99999976}
+  m_LocalPosition: {x: 50.34, y: 5.87, z: -40.11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 16002209}
   - {fileID: 160222714}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.088, y: 0, z: 0}
 --- !u!114 &1251734267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1636,7 +1636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1513797869}
-  speed: 10
+  speed: 1
   wayPoints:
   - {fileID: 391188801}
   - {fileID: 174660685}
@@ -1646,10 +1646,10 @@ MonoBehaviour:
   viewLoS: {fileID: 16002208}
   specificLoS: {fileID: 160222715}
   isEscaper: 1
-  hitboxRadius: 20
-  hitboxAngle: 5
-  hitboxOffset: 10
-  maxAvoidableObs: 5
+  hitboxRadius: 1
+  hitboxAngle: 1
+  hitboxOffset: 1
+  maxAvoidableObs: 10000
   obsMask:
     serializedVersion: 2
     m_Bits: 8
@@ -1666,7 +1666,7 @@ GameObject:
   m_Layer: 0
   m_Name: wayPoint1 (2)
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -2128,7 +2128,7 @@ GameObject:
   m_Layer: 0
   m_Name: wayPoint1 (3)
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
