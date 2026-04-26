@@ -21,7 +21,7 @@ public class EnemyPursuitState : State<EnemyStates>
     {
         var toQuarry = fsm.target.position - fsm.transform.position;
         var distance = toQuarry.magnitude;
-        var c = 2f;
+        var c = 0.05f;
         float t = distance * c;
 
         var pForward = fsm.transform.forward;
@@ -71,7 +71,7 @@ public class EnemyPursuitState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, fsm.target.position) < 0.5f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) < 20f)
         {
             _sm.ChangeState(EnemyStates.Arrive);
         }
