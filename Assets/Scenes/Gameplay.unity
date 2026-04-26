@@ -859,7 +859,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.36943817, y: 36.55, z: 25.886265}
-  m_LocalScale: {x: 4.9724884, y: 4.3171453, z: 4.3171453}
+  m_LocalScale: {x: 15.567729, y: 13.516, z: 13.516}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1349106049}
@@ -1646,9 +1646,9 @@ MonoBehaviour:
   viewLoS: {fileID: 16002208}
   specificLoS: {fileID: 160222715}
   isEscaper: 1
-  hitboxRadius: 6
-  hitboxAngle: 120
-  hitboxOffset: 0.5
+  hitboxRadius: 20
+  hitboxAngle: 5
+  hitboxOffset: 10
   maxAvoidableObs: 5
   obsMask:
     serializedVersion: 2
