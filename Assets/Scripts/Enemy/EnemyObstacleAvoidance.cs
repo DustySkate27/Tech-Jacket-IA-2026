@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyObstacleAvoidance
 {
@@ -15,7 +14,7 @@ public class EnemyObstacleAvoidance
     {
         hitBox = transform; //transform del objeto
         _radius = radius; //Radio máximo
-        _radius = Mathf.Min(_radius, 1); //Radio mínimo
+        //_radius = Mathf.Min(_radius, 1); //Radio mínimo
         _angle = angle; //grados
         _personalArea = personalArea; //
         _obsMask = obsMask; //Con lo que puede chocar
@@ -25,14 +24,14 @@ public class EnemyObstacleAvoidance
     public Vector3 GetDir(Vector3 currentSpeed)
     {
         int count = Physics.OverlapSphereNonAlloc(hitBox.position, _radius, _colliders, _obsMask);
-
         Collider nearColl = null;
-        float nearCollDistance = float.MaxValue;
+        float nearCollDistance = 0;
         Vector3 nearClosestPoint = Vector3.zero;
 
         for (int i = 0; i < count; i++)
         {
-            Vector3 closestPoint = _colliders[i].ClosestPoint(hitBox.position);
+            Collider currentColl = _colliders[i];
+            Vector3 closestPoint = currentColl.ClosestPoint(hitBox.position);
             closestPoint.y = hitBox.position.y;
 
             Vector3 dirToColl = closestPoint - hitBox.position;
@@ -43,7 +42,7 @@ public class EnemyObstacleAvoidance
 
             if (nearColl == null || distance < nearCollDistance)
             {
-                nearColl = _colliders[i];
+                nearColl = currentColl;
                 nearCollDistance = distance;
                 nearClosestPoint = closestPoint;
             }
@@ -62,7 +61,13 @@ public class EnemyObstacleAvoidance
             newDir = Vector3.Cross(hitBox.up, dirToClosestPoint);
         else
             newDir = -Vector3.Cross(hitBox.up, dirToClosestPoint);
-       
+
+        Debug.DrawRay(hitBox.position, newDir, Color.red);
+        Debug.DrawRay(hitBox.position, currentSpeed * 3, Color.green);
+        Debug.DrawRay(hitBox.position, newDir * 3, Color.red);
+        
+
+        Debug.Log("Avoiding obstacle!");
         return Vector3.Lerp(currentSpeed, newDir, (_radius - Mathf.Clamp(nearCollDistance - _personalArea, 0, _radius))/_radius);
     }
 }
