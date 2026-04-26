@@ -1177,7 +1177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 565428918}
-  targetRB: {fileID: 0}
+  targetRB: {fileID: 565428920}
   speed: 10
   wayPoints:
   - {fileID: 1895141093}
@@ -1197,6 +1197,7 @@ MonoBehaviour:
     m_Bits: 8
   maxForce: 5
   rotationSpeed: 5
+  predictionFactor: 0.05
   slowingRadius: 3
 --- !u!23 &1719795967
 MeshRenderer:
@@ -1257,7 +1258,7 @@ Transform:
   m_GameObject: {fileID: 1719795965}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00077204616, y: 0, z: -0, w: 0.99999976}
-  m_LocalPosition: {x: 51.11, y: 5.92, z: -8.73}
+  m_LocalPosition: {x: 43.5, y: 5.9, z: -23.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1328,9 +1329,9 @@ SceneRoots:
   - {fileID: 878431986}
   - {fileID: 145140641}
   - {fileID: 829118768}
+  - {fileID: 1719795969}
   - {fileID: 565428918}
   - {fileID: 1631954542}
-  - {fileID: 1719795969}
   - {fileID: 1264060842}
   - {fileID: 1544524718}
   - {fileID: 1895141093}

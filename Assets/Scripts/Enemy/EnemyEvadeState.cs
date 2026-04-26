@@ -14,9 +14,11 @@ public class EnemyEvadeState : State<EnemyStates>
     public override void Execute()
     {
         base.Execute();
+
+        Evade();
     }
 
-    public void Pursuit()
+    public void Evade()
     {
         var toQuarry = fsm.target.position - fsm.transform.position;
         var distance = toQuarry.magnitude;
@@ -69,7 +71,7 @@ public class EnemyEvadeState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 75f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 30f)
         {
             _sm.ChangeState(EnemyStates.Idle);
         }

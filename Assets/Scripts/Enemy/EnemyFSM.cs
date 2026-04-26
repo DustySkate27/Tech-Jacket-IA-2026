@@ -4,6 +4,7 @@ public enum EnemyStates
 {
     Idle,
     Patrol,
+    PatrolStack,
     ObstacleAvoidance,
     SpecificSee,
     SpecificBeenSeen,
@@ -51,7 +52,7 @@ public class EnemyFSM : MonoBehaviour
         obsAvoid = new EnemyObstacleAvoidance(transform, hitboxRadius, hitboxAngle, hitboxOffset, obsMask, maxAvoidableObs);
 
         State<EnemyStates> idle = new EnemyIdleState(this, _sm);
-        State<EnemyStates> patrol = new EnemyPatrolState(this, _sm);
+        State<EnemyStates> patrol = new EnemyPatrolStack(this, _sm);
 
         State<EnemyStates> specificSee = null;
         State<EnemyStates> specificHaveBeenSeen = null;
@@ -70,7 +71,7 @@ public class EnemyFSM : MonoBehaviour
             arrive = new EnemyArriveState(this, _sm);
         }
 
-        idle.AddTransition(patrol, EnemyStates.Patrol);
+        idle.AddTransition(patrol, EnemyStates.PatrolStack);
 
         patrol.AddTransition(idle, EnemyStates.Idle);
 
@@ -93,7 +94,7 @@ public class EnemyFSM : MonoBehaviour
         }
         
 
-        _sm.SetCurrent(pursuit);
+        _sm.SetCurrent(idle);
     }
 
     private void Update()
