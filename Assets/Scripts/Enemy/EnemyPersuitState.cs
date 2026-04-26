@@ -21,8 +21,7 @@ public class EnemyPursuitState : State<EnemyStates>
     {
         var toQuarry = fsm.target.position - fsm.transform.position;
         var distance = toQuarry.magnitude;
-        var c = 0.05f;
-        float t = distance * c;
+        float t = distance * fsm.predictionFactor;
 
         var pForward = fsm.transform.forward;
         var qForward = fsm.target.forward;

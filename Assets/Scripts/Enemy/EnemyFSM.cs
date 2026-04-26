@@ -36,6 +36,7 @@ public class EnemyFSM : MonoBehaviour
 
     public float maxForce = 5f;
     public float rotationSpeed = 5f;
+    public float predictionFactor = 0.05f;
 
     public float slowingRadius = 15f;
 
