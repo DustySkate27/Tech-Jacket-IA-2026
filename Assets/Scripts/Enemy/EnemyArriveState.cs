@@ -4,16 +4,12 @@ using UnityEngine;
 
 public class EnemyArriveState : State<EnemyStates>
 {
-    private Transform _target;
-    private Transform _entity;
-    private float maxSpeed;
-    private float slowingDistance;
-    public EnemyArriveState(Transform target, Transform entity, float maxSpeed, float slowingDistance)
+    private EnemyFSM fsm;
+    private Vector3 currentSpeed;
+
+    public EnemyArriveState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
-        _target = target;
-        _entity = entity;
-        this.maxSpeed = maxSpeed;
-        this.slowingDistance = slowingDistance;
+        this.fsm = fsm;
     }
 
     public override void Execute()
@@ -22,27 +18,50 @@ public class EnemyArriveState : State<EnemyStates>
         Arrive();
     }
 
-    public void Arrive()
+    private void Arrive()
     {
-        var dir = _target.position - _entity.position;
-        var distance = dir.magnitude;
-        var rampedSpeed = fsm.speed * (distance / slowingDistance);
-        var clipedSpeed = Mathf.Min(rampedSpeed, fsm.speed);
-        var desired = dir / distance * clipedSpeed;
-        var steer = desired - fsm.speed;
-        fsm.speed += steer * Time.deltaTime;
+        var toTarget = fsm.target.position - fsm.transform.position;
+        var distance = toTarget.magnitude;
 
-        fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
-        fsm.transform.forward = dir;
+        float desiredSpeed;
 
-        TargetDistanceCheck()
+        if (distance < fsm.slowingRadius)
+        {
+            desiredSpeed = fsm.speed * (distance / fsm.slowingRadius);
+        }
+        else
+        {
+            desiredSpeed = fsm.speed;
+        }
+
+        var desired = toTarget.normalized * desiredSpeed;
+
+        var steer = desired - currentSpeed;
+        steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
+
+        currentSpeed += steer * Time.deltaTime;
+        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
+
+        fsm.transform.position += currentSpeed * Time.deltaTime;
+
+        if (currentSpeed.sqrMagnitude > 0.001f)
+        {
+            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized);
+            fsm.transform.rotation = Quaternion.Slerp(
+                fsm.transform.rotation,
+                targetRotation,
+                fsm.rotationSpeed * Time.deltaTime
+            );
+        }
+
+        TargetDistanceCheck();
     }
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, target.position) > 0.5f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 0.5f)
         {
-            _sm.ChangeState(EnemyStates.SpecificSee);
+            _sm.ChangeState(EnemyStates.Persuit);
         }
     }
 }

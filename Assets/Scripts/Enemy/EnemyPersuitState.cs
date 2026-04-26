@@ -1,71 +1,79 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
-public class EnemyPersuitState : State<EnemyStates>
+public class EnemyPursuitState : State<EnemyStates>
 {
-    private Transform _target;
-    private Transform _entity;
-    private Rigidbody playerRB;
+    private EnemyFSM fsm;
+    private Vector3 currentSpeed;
 
-    public Persuit(Transform target, Transform entity)
+    public EnemyPursuitState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
-        _target = target;
-        _entity = entity;
-        playerRB = _entity.GetComponent<Rigidbody>();
+        this.fsm = fsm;
     }
 
     public override void Execute()
     {
         base.Execute();
-        Persuit();
+        Pursuit();
     }
 
-    public void Persuit()
+    public void Pursuit()
     {
-        var toQuarry = _target.position - _entity.position;
+        var toQuarry = fsm.target.position - fsm.transform.position;
         var distance = toQuarry.magnitude;
         var c = 2f;
         float t = distance * c;
-        var pForward = _entity.forward;
-        var qForward = _target.forward;
+
+        var pForward = fsm.transform.forward;
+        var qForward = fsm.target.forward;
+
+
         var relativeHeading = Vector3.Dot(pForward, qForward);
-        var toPursuer = (_entity.position - _target.position).normalized;
+        var toPursuer = (fsm.transform.position - fsm.target.position).normalized;
         var forwardDot = Vector3.Dot(qForward, toPursuer);
-        //
+
         if (forwardDot > 0 && relativeHeading < -0.95f)
         {
             t = 0;
         }
         else
         {
-            if (relativeHeading < 0)
-            {
-                t *= 1.5f;
-            }
-            if (forwardDot < 0)
-            {
-                t *= 1.2f;
-            }
+            if (relativeHeading < 0) t *= 1.5f;
+            if (forwardDot < 0) t *= 1.2f;
         }
-        var futurePosition = _target.position + playerRB.linearVelocity * t;
-        var dir = futurePosition - _entity.position;
+
+        var futurePosition = fsm.target.position + fsm.targetRB.velocity * t;
+
+        var dir = futurePosition - fsm.transform.position;
         var desired = dir.normalized * fsm.speed;
-        var steer = desired - fsm.speed;
-        fsm.speed += steer * Time.deltaTime;
 
-        fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
-        fsm.transform.forward = dir;
+        var steer = desired - currentSpeed;
+        steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
 
-        TargetDistanceCheck()
+        currentSpeed += steer * Time.deltaTime;
+        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
+
+        fsm.transform.position += currentSpeed * Time.deltaTime;
+
+        if (currentSpeed.sqrMagnitude > 0.001f)
+        {
+            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized);
+            fsm.transform.rotation = Quaternion.Slerp(
+                fsm.transform.rotation,
+                targetRotation,
+                fsm.rotationSpeed * Time.deltaTime
+            );
+        }
+
+
+        TargetDistanceCheck();
     }
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, target.position) < 0.5f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) < 0.5f)
         {
-            _sm.ChangeState(EnemyStates.SpecificSee);
+            _sm.ChangeState(EnemyStates.Arrive);
         }
     }
 }

@@ -6,12 +6,15 @@ public enum EnemyStates
     Patrol,
     ObstacleAvoidance,
     SpecificSee,
-    SpecificBeenSeen
+    SpecificBeenSeen,
+    Arrive,
+    Persuit
 }
 
 public class EnemyFSM : MonoBehaviour
 {
     [SerializeField] public Transform target;
+    [SerializeField] public Rigidbody targetRB;
 
     public int speed;
     [SerializeField] public Transform[] wayPoints;
@@ -30,6 +33,11 @@ public class EnemyFSM : MonoBehaviour
     public float hitboxOffset;
     public int maxAvoidableObs;
     public LayerMask obsMask;
+
+    public float maxForce = 5f;
+    public float rotationSpeed = 5f;
+
+    public float slowingRadius = 3f;
 
 
     public LineOfSight ViewLoS => viewLoS;
