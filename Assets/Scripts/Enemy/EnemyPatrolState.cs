@@ -1,85 +1,106 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEditor;
 using UnityEngine;
 
 public class EnemyPatrolState : State<EnemyStates>
 {
     private EnemyFSM fsm;
-    private Stack<Transform> stackWP;
-    private bool goingBack = false;
-    private Transform currentStackPos = null;
     private int currentWP;
 
-    public EnemyPatrolState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
+    public EnemyPatrolState(
+        EnemyFSM fsm,
+        StateMachine<EnemyStates> sm) : base(sm)
     {
         this.fsm = fsm;
         currentWP = fsm.currentWP;
-        stackWP = new Stack<Transform>();
     }
 
     public override void Execute()
     {
         base.Execute();
+
         Patrol();
     }
 
     private void Patrol()
     {
-        if (stackWP.Count != fsm.wayPoints.Length && !goingBack)
+        Debug.Log(currentWP);
+        Transform targetWP = fsm.wayPoints[currentWP];
+
+        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 0.1f)
         {
-            if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.1f)
-            {
-                Vector3 dir = fsm.wayPoints[currentWP].position - fsm.transform.position;
-                dir = fsm.obsAvoid.GetDir(dir).normalized;
-                fsm.transform.position += dir * fsm.speed * Time.deltaTime;
-                fsm.transform.forward = dir;
+            Vector3 dir = targetWP.position - fsm.transform.position;
 
-            }
-            else
-            {
-                stackWP.Push(fsm.wayPoints[currentWP]);
-                currentWP++;
-                if (currentWP >= fsm.wayPoints.Length)
-                {
-                    goingBack = true;
-                    currentWP = 0;
-                }
+            dir = fsm.obsAvoid.GetDir(dir).normalized;
 
-            }
+            fsm.transform.position += dir * fsm.speed * Time.deltaTime;
+
+            fsm.transform.forward = dir;
         }
-        else if (goingBack)
+        else
         {
-            if (currentStackPos == null)
-            {
-                if (!stackWP.TryPop(out currentStackPos))
-                {
-                    goingBack = false;
-                    _sm.ChangeState(EnemyStates.Idle);
-                }
-            }
-            else
-            {
-                if (Vector3.Distance(fsm.transform.position, currentStackPos.position) > 0.5f)
-                {
-                    Vector3 dir = currentStackPos.position - fsm.transform.position;
-                    dir = fsm.obsAvoid.GetDir(dir).normalized;
-                    fsm.transform.position += dir * fsm.speed * Time.deltaTime;
-                    fsm.transform.forward = dir;
-
-
-                }
-                else
-                    currentStackPos = null;
-            }
+            Debug.Log("alcance " + currentWP);
+            ChooseNextWaypoint();
         }
-
         SawTheTarget();
     }
 
+
+    private void ChooseNextWaypoint()
+    {
+        var weights = SetWeights(currentWP,fsm.wayPoints);
+
+        Transform next = MyRandom.RouletteWheelSelection(weights);
+
+        currentWP = System.Array.IndexOf(fsm.wayPoints,next);
+            
+    }
+
+
+    private Dictionary<Transform, float> SetWeights(
+        int currentIndex,
+        Transform[] waypoints)
+    {
+        Dictionary<Transform, float> weights = new();
+
+        Transform current = waypoints[currentIndex];
+
+        for (int i = 0; i < waypoints.Length; i++)
+        {
+            if (i == currentIndex)
+                continue;
+
+            Transform wp = waypoints[i];
+
+            float dist =
+                Vector3.Distance(current.position, wp.position);
+
+            dist = Mathf.Max(dist,0.01f);
+
+            // peso segun distancia
+            float weight = 1f / dist;
+
+            if (Mathf.Abs(i - currentIndex) == 1)
+            {
+                weight *= 2f;
+            }
+
+            weights.Add(wp,weight);
+        }
+
+        return weights;
+    }
+
+
     private void SawTheTarget()
     {
-        if (fsm.ViewLoS.CheckView(fsm.target) && fsm.ViewLoS.CheckRange(fsm.target) && fsm.ViewLoS.CheckAngle(fsm.target))
+        if (fsm.ViewLoS.CheckView(
+                fsm.target) &&
+
+            fsm.ViewLoS.CheckRange(
+                fsm.target) &&
+
+            fsm.ViewLoS.CheckAngle(
+                fsm.target))
         {
             _sm.ChangeState(EnemyStates.SpecificSee);
         }
