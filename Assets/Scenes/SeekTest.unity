@@ -478,7 +478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reference: {fileID: 170247685}
   range: 15
-  angle: 130
+  angle: 90
   obsMask:
     serializedVersion: 2
     m_Bits: 8
@@ -841,7 +841,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -858,7 +858,7 @@ Transform:
   m_GameObject: {fileID: 621781180}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22.5, y: 5.89, z: 34.3}
+  m_LocalPosition: {x: -3.4, y: 5.89, z: 13.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1132,7 +1132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &915981435
 Transform:
   m_ObjectHideFlags: 0
@@ -1166,7 +1166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1126235369}
   targetRB: {fileID: 1126235365}
-  speed: 5
+  speed: 20
   wayPoints:
   - {fileID: 597090416}
   - {fileID: 932467185}
@@ -1322,7 +1322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reference: {fileID: 935956266}
-  range: 0
+  range: 5
   angle: 80
   obsMask:
     serializedVersion: 2
@@ -1372,7 +1372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reference: {fileID: 1076718085}
-  range: 0
+  range: 5
   angle: 80
   obsMask:
     serializedVersion: 2
@@ -1611,7 +1611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reference: {fileID: 1104599398}
-  range: 10
+  range: 15
   angle: 90
   obsMask:
     serializedVersion: 2
@@ -1737,7 +1737,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aba28886e02e49a428e663115d1b8d65, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1857,7 +1857,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4f828defd3c2965498024c87777ea1a4, type: 2}
+  - {fileID: 2100000, guid: c0484e368a418c9468a4994bd251a54b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1984,7 +1984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reference: {fileID: 1454061141}
-  range: 0
+  range: 5
   angle: 80
   obsMask:
     serializedVersion: 2
@@ -2084,7 +2084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reference: {fileID: 1492321064}
-  range: 0
+  range: 5
   angle: 80
   obsMask:
     serializedVersion: 2
@@ -2136,7 +2136,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -2153,7 +2153,7 @@ Transform:
   m_GameObject: {fileID: 1572653521}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 60.1, y: 5.89, z: 31}
+  m_LocalPosition: {x: 44.3, y: 5.89, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2513,7 +2513,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -2530,7 +2530,7 @@ Transform:
   m_GameObject: {fileID: 1709444117}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 63.6, y: 5.89, z: -52.2}
+  m_LocalPosition: {x: 44.4, y: 5.89, z: -29.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2568,7 +2568,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -2585,7 +2585,7 @@ Transform:
   m_GameObject: {fileID: 2022381847}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22.7, y: 5.89, z: -52.1}
+  m_LocalPosition: {x: -0.7, y: 5.89, z: -32.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
