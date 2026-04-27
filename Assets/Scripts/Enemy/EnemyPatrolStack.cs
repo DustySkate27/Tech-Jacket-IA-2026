@@ -33,8 +33,8 @@ public class EnemyPatrolStack : State<EnemyStates>
             {
                 Vector3 dir = fsm.wayPoints[currentWP].position - fsm.transform.position;
 
-                var avoidance = fsm.ComputeAvoidance();
-                dir += avoidance;
+                //var avoidance = fsm.ComputeAvoidance();
+                //dir += avoidance;
 
                 fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
                 fsm.transform.forward = dir;
@@ -68,8 +68,8 @@ public class EnemyPatrolStack : State<EnemyStates>
                 {
                     Vector3 dir = currentStackPos.position - fsm.transform.position;
 
-                    var avoidance = fsm.ComputeAvoidance();
-                    dir += avoidance;
+                    //var avoidance = fsm.ComputeAvoidance();
+                    //dir += avoidance;
 
                     fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
                     fsm.transform.forward = dir;
