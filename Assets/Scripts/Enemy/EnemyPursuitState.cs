@@ -46,7 +46,7 @@ public class EnemyPursuitState : State<EnemyStates>
         var dir = futurePosition - fsm.transform.position;
         var desired = dir.normalized * fsm.speed;
 
-        var avoidance = ComputeAvoidance();
+        var avoidance = fsm.ComputeAvoidance();
         desired += avoidance;
 
         var steer = desired - currentSpeed;
@@ -54,6 +54,8 @@ public class EnemyPursuitState : State<EnemyStates>
 
         currentSpeed += steer * Time.deltaTime;
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
+
+        currentSpeed.y = 0;
 
         fsm.transform.position += currentSpeed * Time.deltaTime;
 
@@ -67,53 +69,7 @@ public class EnemyPursuitState : State<EnemyStates>
             );
         }
 
-
-
         TargetDistanceCheck();
-    }
-
-    private Vector3 ComputeAvoidance()
-    {
-        var forward = fsm.transform.forward;
-        var right = fsm.transform.right;
-
-        var directions = new Vector3[]
-        {
-        forward,
-        (forward + right * 0.5f).normalized,
-        (forward - right * 0.5f).normalized
-        };
-
-        var totalAvoidance = Vector3.zero;
-        bool found = false;
-
-        foreach (var dir in directions)
-        {
-            var hits = Physics.SphereCastAll(
-                fsm.transform.position,
-                fsm.avoidanceRadius,
-                dir,
-                fsm.avoidanceDistance,
-                fsm.obsMask);
-
-            foreach (var hit in hits)
-            {
-                var avoidDir = Vector3.Cross(dir, Vector3.up).normalized;
-
-                if (Vector3.Dot(avoidDir, hit.normal) < 0)
-                    avoidDir = -avoidDir;
-
-                var strength = 1f - (hit.distance / fsm.avoidanceDistance);
-
-                totalAvoidance += avoidDir * fsm.speed * strength * fsm.avoidanceWeight;
-                found = true;
-            }
-        }
-
-        if (!found) return Vector3.zero;
-
-        // Promediar para evitar que multiples hits se cancelen entre si
-        return Vector3.ClampMagnitude(totalAvoidance, fsm.speed * fsm.avoidanceWeight);
     }
 
     private void TargetDistanceCheck()

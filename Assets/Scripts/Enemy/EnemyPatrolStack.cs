@@ -10,6 +10,7 @@ public class EnemyPatrolStack : State<EnemyStates>
     private bool goingBack = false;
     private Transform currentStackPos = null;
     private int currentWP;
+
     private Vector3 currentSpeed;
 
     public EnemyPatrolStack(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
@@ -29,16 +30,9 @@ public class EnemyPatrolStack : State<EnemyStates>
     {
         if (stackWP.Count != fsm.wayPoints.Length && !goingBack)
         {
-            if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.1f)
+            if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.5f)
             {
-                Vector3 dir = fsm.wayPoints[currentWP].position - fsm.transform.position;
-
-                //var avoidance = fsm.ComputeAvoidance();
-                //dir += avoidance;
-
-                fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
-                fsm.transform.forward = dir;
-
+                MoveTowards(fsm.wayPoints[currentWP].position);
             }
             else
             {
@@ -49,7 +43,6 @@ public class EnemyPatrolStack : State<EnemyStates>
                     goingBack = true;
                     currentWP = 0;
                 }
-
             }
         }
         else if (goingBack)
@@ -65,22 +58,45 @@ public class EnemyPatrolStack : State<EnemyStates>
             else
             {
                 if (Vector3.Distance(fsm.transform.position, currentStackPos.position) > 0.5f)
-                {
-                    Vector3 dir = currentStackPos.position - fsm.transform.position;
-
-                    //var avoidance = fsm.ComputeAvoidance();
-                    //dir += avoidance;
-
-                    fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
-                    fsm.transform.forward = dir;
-                }
+                    MoveTowards(currentStackPos.position);
                 else
                     currentStackPos = null;
             }
         }
 
         SawTheTarget();
+    }
+
+    private void MoveTowards(Vector3 targetPosition)
+    {
+        var dir = targetPosition - fsm.transform.position;
+        var desired = dir.normalized * fsm.speed;
+
+        // Sumar avoidance a la direccion deseada ANTES de calcular el steer
+        var avoidance = fsm.ComputeAvoidance();
+        desired += avoidance;
+
+        // Steering igual que en Pursuit
+        var steer = desired - currentSpeed;
+        steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
+
+        currentSpeed += steer * Time.deltaTime;
+        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
+
+        currentSpeed.y = 0;
+
+        fsm.transform.position += currentSpeed * Time.deltaTime;
+
         
+        if (currentSpeed.sqrMagnitude > 0.001f)
+        {
+            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized);
+            fsm.transform.rotation = Quaternion.Slerp(
+                fsm.transform.rotation,
+                targetRotation,
+                fsm.rotationSpeed * Time.deltaTime
+            );
+        }
     }
 
     private void SawTheTarget()

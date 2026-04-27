@@ -57,6 +57,7 @@ public class EnemyEvadeState : State<EnemyStates>
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
 
         currentSpeed.y = 0;
+
         fsm.transform.position += currentSpeed * Time.deltaTime;
 
         if (currentSpeed.sqrMagnitude > 0.001f)

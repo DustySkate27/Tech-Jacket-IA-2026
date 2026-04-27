@@ -7,6 +7,8 @@ public class EnemyPatrolState : State<EnemyStates>
     private EnemyFSM fsm;
     private int currentWP;
 
+    private Vector3 currentSpeed;
+
     public EnemyPatrolState(
         EnemyFSM fsm,
         StateMachine<EnemyStates> sm) : base(sm)
@@ -26,16 +28,9 @@ public class EnemyPatrolState : State<EnemyStates>
     {
         Transform targetWP = fsm.wayPoints[currentWP];
 
-        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 0.1f)
+        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 0.5f)
         {
-            Vector3 dir = targetWP.position - fsm.transform.position;
-
-            var avoidance = fsm.ComputeAvoidance();
-            dir += avoidance;
-
-            fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
-
-            fsm.transform.forward = dir;
+            MoveTowards(fsm.wayPoints[currentWP].position);
         }
         else
         {
@@ -43,6 +38,39 @@ public class EnemyPatrolState : State<EnemyStates>
         }
         
         SawTheTarget();
+    }
+
+    private void MoveTowards(Vector3 targetPosition)
+    {
+        var dir = targetPosition - fsm.transform.position;
+        var desired = dir.normalized * fsm.speed;
+
+        // Sumar avoidance a la direccion deseada ANTES de calcular el steer
+        var avoidance = fsm.ComputeAvoidance();
+        desired += avoidance;
+
+        // Steering igual que en Pursuit
+        var steer = desired - currentSpeed;
+        steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
+
+        currentSpeed += steer * Time.deltaTime;
+        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
+
+        currentSpeed.y = 0;
+
+        fsm.transform.position += currentSpeed * Time.deltaTime;
+
+        // Rotar hacia donde se mueve
+
+        if (currentSpeed.sqrMagnitude > 0.001f)
+        {
+            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized);
+            fsm.transform.rotation = Quaternion.Slerp(
+                fsm.transform.rotation,
+                targetRotation,
+                fsm.rotationSpeed * Time.deltaTime
+            );
+        }
     }
 
 
