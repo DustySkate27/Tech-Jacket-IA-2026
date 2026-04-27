@@ -4,12 +4,11 @@ public enum EnemyStates
 {
     Idle,
     Patrol,
-    PatrolStack,
     ObstacleAvoidance,
     SpecificSee,
-    SpecificBeenSeen,
+    Flee,
+    Seek,
     Arrive,
-    Persuit
 }
 
 public class EnemyFSM : MonoBehaviour
@@ -28,6 +27,7 @@ public class EnemyFSM : MonoBehaviour
 
     public bool isEscaper;
 
+    [SerializeField, Header("ObsAvoid")]
     public EnemyObstacleAvoidance obsAvoid;
     public float hitboxRadius;
     public float hitboxAngle;
@@ -52,45 +52,48 @@ public class EnemyFSM : MonoBehaviour
         obsAvoid = new EnemyObstacleAvoidance(transform, hitboxRadius, hitboxAngle, hitboxOffset, obsMask, maxAvoidableObs);
 
         State<EnemyStates> idle = new EnemyIdleState(this, _sm);
-        State<EnemyStates> patrol = new EnemyPatrolStack(this, _sm);
 
-        State<EnemyStates> specificSee = null;
-        State<EnemyStates> specificHaveBeenSeen = null;
 
-        State<EnemyStates> pursuit = null;
+        State<EnemyStates> patrol = null;
+        State <EnemyStates> specificSee = null;
+        State<EnemyStates> flee = null;
         State<EnemyStates> arrive = null;
 
         if (isEscaper)
         {
+            patrol = new EnemyPatrolStack(this, _sm);
             specificSee = new EnemyEvadeState(this, _sm);
-            specificHaveBeenSeen = new EnemyFleeState(this, _sm);
+            flee = new EnemyFleeState(this, _sm);
         }
         else
         {
-            pursuit = new EnemyPursuitState(this, _sm);
+            patrol = new EnemyPatrolState(this, _sm);
+            specificSee = new EnemyPursuitState(this, _sm);
             arrive = new EnemyArriveState(this, _sm);
         }
 
-        idle.AddTransition(patrol, EnemyStates.PatrolStack);
-
         patrol.AddTransition(idle, EnemyStates.Idle);
+
+        idle.AddTransition(patrol, EnemyStates.Patrol);
 
         if (isEscaper)
         {
             patrol.AddTransition(specificSee, EnemyStates.SpecificSee);
-            patrol.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
-
+            patrol.AddTransition(flee, EnemyStates.Flee);
+            
             idle.AddTransition(specificSee, EnemyStates.SpecificSee);
-            idle.AddTransition(specificHaveBeenSeen, EnemyStates.SpecificBeenSeen);
+            idle.AddTransition(flee, EnemyStates.Flee);
 
             specificSee.AddTransition(idle, EnemyStates.Idle);
-            specificHaveBeenSeen.AddTransition(idle, EnemyStates.Idle);
+            specificSee.AddTransition(flee, EnemyStates.Flee);
+            flee.AddTransition(idle, EnemyStates.Idle);
         }
-        
-        if (!isEscaper)
+        else
         {
-            pursuit.AddTransition(arrive, EnemyStates.Arrive);
-            arrive.AddTransition(pursuit, EnemyStates.Persuit);
+            patrol.AddTransition(specificSee, EnemyStates.SpecificSee);
+            specificSee.AddTransition(arrive, EnemyStates.Arrive);
+            arrive.AddTransition(specificSee, EnemyStates.Idle);
+
         }
         
 
@@ -102,4 +105,8 @@ public class EnemyFSM : MonoBehaviour
         _sm.Update();
     }
 
+    private void OnDestroy()
+    {
+        _sm = null;
+    }
 }

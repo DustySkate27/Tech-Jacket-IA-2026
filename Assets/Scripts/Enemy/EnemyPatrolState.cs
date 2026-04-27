@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyPatrolState : State<EnemyStates>
@@ -23,24 +24,21 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private void Patrol()
     {
-        Debug.Log(currentWP);
         Transform targetWP = fsm.wayPoints[currentWP];
 
         if (Vector3.Distance(fsm.transform.position,targetWP.position) > 0.1f)
         {
             Vector3 dir = targetWP.position - fsm.transform.position;
 
-            dir = fsm.obsAvoid.GetDir(dir).normalized;
-
-            fsm.transform.position += dir * fsm.speed * Time.deltaTime;
+            fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
 
             fsm.transform.forward = dir;
         }
         else
         {
-            Debug.Log("alcance " + currentWP);
             ChooseNextWaypoint();
         }
+        
         SawTheTarget();
     }
 
@@ -51,14 +49,12 @@ public class EnemyPatrolState : State<EnemyStates>
 
         Transform next = MyRandom.RouletteWheelSelection(weights);
 
-        currentWP = System.Array.IndexOf(fsm.wayPoints,next);
+        currentWP = Array.IndexOf(fsm.wayPoints,next);
             
     }
 
 
-    private Dictionary<Transform, float> SetWeights(
-        int currentIndex,
-        Transform[] waypoints)
+    private Dictionary<Transform, float> SetWeights(int currentIndex, Transform[] waypoints)
     {
         Dictionary<Transform, float> weights = new();
 
@@ -93,14 +89,9 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private void SawTheTarget()
     {
-        if (fsm.ViewLoS.CheckView(
-                fsm.target) &&
-
-            fsm.ViewLoS.CheckRange(
-                fsm.target) &&
-
-            fsm.ViewLoS.CheckAngle(
-                fsm.target))
+        if (fsm.ViewLoS.CheckView(fsm.target) &&
+            fsm.ViewLoS.CheckRange(fsm.target) &&
+            fsm.ViewLoS.CheckAngle(fsm.target))
         {
             _sm.ChangeState(EnemyStates.SpecificSee);
         }

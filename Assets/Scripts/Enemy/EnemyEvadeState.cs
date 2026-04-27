@@ -53,7 +53,8 @@ public class EnemyEvadeState : State<EnemyStates>
         currentSpeed += steer * Time.deltaTime;
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
 
-        fsm.transform.position += currentSpeed * Time.deltaTime;
+        currentSpeed.y = 0;
+        fsm.transform.position += currentSpeed * Time.deltaTime * fsm.speed;
 
         if (currentSpeed.sqrMagnitude > 0.001f)
         {
@@ -73,7 +74,8 @@ public class EnemyEvadeState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 30f)
         {
-            _sm.ChangeState(EnemyStates.Idle);
+            fsm.speed = fsm.speed * 2;
+            _sm.ChangeState(EnemyStates.Flee);
         }
     }
 }

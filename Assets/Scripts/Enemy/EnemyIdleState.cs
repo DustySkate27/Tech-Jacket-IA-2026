@@ -27,7 +27,7 @@ public class EnemyIdleState : State<EnemyStates>
         else
         {
             counter = 0;
-            _sm.ChangeState(EnemyStates.PatrolStack);
+            _sm.ChangeState(EnemyStates.Patrol);
         }
         SawTheTarget();
     }

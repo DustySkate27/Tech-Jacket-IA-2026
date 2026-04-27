@@ -23,7 +23,7 @@ public class EnemyFleeState : State<EnemyStates>
         var toTarget = fsm.target.position - fsm.transform.position;
 
         var dir = -toTarget;
-
+        
         var desired = dir.normalized * fsm.speed;
 
         var steer = desired - currentSpeed;
@@ -32,7 +32,8 @@ public class EnemyFleeState : State<EnemyStates>
         currentSpeed += steer * Time.deltaTime;
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
 
-        fsm.transform.position += currentSpeed * Time.deltaTime;
+        currentSpeed.y = 0;
+        fsm.transform.position += currentSpeed * Time.deltaTime * fsm.speed;
 
         if (currentSpeed.sqrMagnitude > 0.001f)
         {
@@ -51,6 +52,7 @@ public class EnemyFleeState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 50f)
         {
+            fsm.speed = fsm.speed / 2;
             _sm.ChangeState(EnemyStates.Idle);
         }
     }

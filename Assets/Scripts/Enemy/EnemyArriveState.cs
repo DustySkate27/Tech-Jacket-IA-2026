@@ -63,7 +63,7 @@ public class EnemyArriveState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 20f)
         {
-            _sm.ChangeState(EnemyStates.Persuit);
+            _sm.ChangeState(EnemyStates.Arrive);
         }
     }
 }

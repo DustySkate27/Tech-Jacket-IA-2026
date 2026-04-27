@@ -66,8 +66,6 @@ public class EnemyPatrolStack : State<EnemyStates>
                     dir = fsm.obsAvoid.GetDir(dir).normalized;
                     fsm.transform.position += dir * fsm.speed * Time.deltaTime;
                     fsm.transform.forward = dir;
-
-
                 }
                 else
                     currentStackPos = null;
@@ -75,6 +73,7 @@ public class EnemyPatrolStack : State<EnemyStates>
         }
 
         SawTheTarget();
+        
     }
 
     private void SawTheTarget()

@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using static UnityEditor.PlayerSettings;
 
 public class TreePlayer : MonoBehaviour
 {
     public LineOfSight _los;
-    public Transform target;
+    public GameObject target;
 
     private float horizontal;
     private float vertical;
@@ -24,7 +25,6 @@ public class TreePlayer : MonoBehaviour
         QuestionNode isWalking = new QuestionNode(IsWalking, walk, idle);
         QuestionNode isInteracting = new QuestionNode(IsInteracting, interact, isWalking);
 
-
         root = isInteracting;
     }
 
@@ -33,11 +33,16 @@ public class TreePlayer : MonoBehaviour
     {
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
-
         root.Execute();
     }
 
-    private bool IsInteracting() => _los.CheckRange(target) && _los.CheckAngle(target) && _los.CheckView(target) && Input.GetKeyDown(KeyCode.Space);
+    private bool IsInteracting() => IsLookingAtTheTarget() && Input.GetKeyDown(KeyCode.Space);
+    private bool IsLookingAtTheTarget()
+    {
+        if (target != null) 
+           return _los.CheckRange(target.transform) && _los.CheckAngle(target.transform) && _los.CheckView(target.transform);
+        return false;
+    }
     private bool IsWalking() => horizontal != 0 || vertical != 0;
 
     private void Idle()
@@ -55,9 +60,12 @@ public class TreePlayer : MonoBehaviour
         rb.velocity = direction * speed;
         rb.rotation = targetRotation;
     }
+
     private void Interact()
     {
         Debug.Log("Objetivo cumplido.");
+        Destroy(target);
+        target = null;
     }
 
 

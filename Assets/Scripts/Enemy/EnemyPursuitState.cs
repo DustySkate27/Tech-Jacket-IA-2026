@@ -59,7 +59,7 @@ public class EnemyPursuitState : State<EnemyStates>
         currentSpeed += steer * Time.deltaTime;
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
 
-        fsm.transform.position += currentSpeed * Time.deltaTime;
+        fsm.transform.position += currentSpeed * Time.deltaTime * fsm.speed;
 
         if (currentSpeed.sqrMagnitude > 0.001f)
         {
