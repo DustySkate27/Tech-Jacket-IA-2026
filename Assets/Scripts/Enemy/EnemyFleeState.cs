@@ -26,6 +26,9 @@ public class EnemyFleeState : State<EnemyStates>
         
         var desired = dir.normalized * fsm.speed;
 
+        var avoidance = fsm.ComputeAvoidance();
+        desired += avoidance;
+
         var steer = desired - currentSpeed;
         steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
 
@@ -33,7 +36,7 @@ public class EnemyFleeState : State<EnemyStates>
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
 
         currentSpeed.y = 0;
-        fsm.transform.position += currentSpeed * Time.deltaTime * fsm.speed;
+        fsm.transform.position += currentSpeed * Time.deltaTime;
 
         if (currentSpeed.sqrMagnitude > 0.001f)
         {

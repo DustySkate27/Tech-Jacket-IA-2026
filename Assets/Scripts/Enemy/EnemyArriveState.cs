@@ -37,13 +37,16 @@ public class EnemyArriveState : State<EnemyStates>
 
         var desired = toTarget.normalized * desiredSpeed;
 
+        var avoidance = fsm.ComputeAvoidance();
+        desired += avoidance;
+
         var steer = desired - currentSpeed;
         steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
 
         currentSpeed += steer * Time.deltaTime;
         currentSpeed = currentSpeed = Vector3.ClampMagnitude(currentSpeed, desiredSpeed);
 
-        fsm.transform.position += currentSpeed * Time.deltaTime * fsm.speed;
+        fsm.transform.position += currentSpeed * Time.deltaTime;
 
         if (currentSpeed.sqrMagnitude > 0.001f)
         {

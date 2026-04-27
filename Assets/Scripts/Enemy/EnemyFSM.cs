@@ -19,7 +19,7 @@ public class EnemyFSM : MonoBehaviour
     [SerializeField] public Rigidbody targetRB;
     [SerializeField] public BoxCollider hurtbox;
 
-    public int speed;
+    [SerializeField] public float speed;
     [SerializeField] public Transform[] wayPoints;
     public int currentWP = 0;
 
@@ -43,6 +43,10 @@ public class EnemyFSM : MonoBehaviour
     public float predictionFactor = 0.05f;
 
     public float slowingRadius = 15f;
+
+    public float avoidanceDistance = 10f;  // que tan lejos detecta obstaculos
+    public float avoidanceRadius = 10f; // grosor del SphereCast
+    public float avoidanceWeight = 2f;  // que tan fuerte es la evasion
 
 
     public LineOfSight ViewLoS => viewLoS;
@@ -116,6 +120,50 @@ public class EnemyFSM : MonoBehaviour
     private void Update()
     {
         _sm.Update();
+    }
+
+    public Vector3 ComputeAvoidance()
+    {
+        var forward = transform.forward;
+        var right = transform.right;
+
+        var directions = new Vector3[]
+        {
+        forward,
+        (forward + right * 0.5f).normalized,
+        (forward - right * 0.5f).normalized
+        };
+
+        var totalAvoidance = Vector3.zero;
+        bool found = false;
+
+        foreach (var dir in directions)
+        {
+            var hits = Physics.SphereCastAll(
+                transform.position,
+                avoidanceRadius,
+                dir,
+                avoidanceDistance,
+                obsMask);
+
+            foreach (var hit in hits)
+            {
+                var avoidDir = Vector3.Cross(dir, Vector3.up).normalized;
+
+                if (Vector3.Dot(avoidDir, hit.normal) < 0)
+                    avoidDir = -avoidDir;
+
+                var strength = 1f - (hit.distance / avoidanceDistance);
+
+                totalAvoidance += avoidDir * speed * strength * avoidanceWeight;
+                found = true;
+            }
+        }
+
+        if (!found) return Vector3.zero;
+
+        // Promediar para evitar que multiples hits se cancelen entre si
+        return Vector3.ClampMagnitude(totalAvoidance, speed * avoidanceWeight);
     }
 
     private void OnDestroy()

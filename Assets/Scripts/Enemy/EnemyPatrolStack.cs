@@ -10,6 +10,7 @@ public class EnemyPatrolStack : State<EnemyStates>
     private bool goingBack = false;
     private Transform currentStackPos = null;
     private int currentWP;
+    private Vector3 currentSpeed;
 
     public EnemyPatrolStack(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
@@ -31,8 +32,11 @@ public class EnemyPatrolStack : State<EnemyStates>
             if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.1f)
             {
                 Vector3 dir = fsm.wayPoints[currentWP].position - fsm.transform.position;
-                dir = fsm.obsAvoid.GetDir(dir).normalized;
-                fsm.transform.position += dir * fsm.speed * Time.deltaTime;
+
+                var avoidance = fsm.ComputeAvoidance();
+                dir += avoidance;
+
+                fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
                 fsm.transform.forward = dir;
 
             }
@@ -63,8 +67,11 @@ public class EnemyPatrolStack : State<EnemyStates>
                 if (Vector3.Distance(fsm.transform.position, currentStackPos.position) > 0.5f)
                 {
                     Vector3 dir = currentStackPos.position - fsm.transform.position;
-                    dir = fsm.obsAvoid.GetDir(dir).normalized;
-                    fsm.transform.position += dir * fsm.speed * Time.deltaTime;
+
+                    var avoidance = fsm.ComputeAvoidance();
+                    dir += avoidance;
+
+                    fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
                     fsm.transform.forward = dir;
                 }
                 else

@@ -30,6 +30,9 @@ public class EnemyPatrolState : State<EnemyStates>
         {
             Vector3 dir = targetWP.position - fsm.transform.position;
 
+            var avoidance = fsm.ComputeAvoidance();
+            dir += avoidance;
+
             fsm.transform.position += dir.normalized * fsm.speed * Time.deltaTime;
 
             fsm.transform.forward = dir;
