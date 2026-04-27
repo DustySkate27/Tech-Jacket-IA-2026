@@ -28,7 +28,7 @@ public class EnemyPatrolState : State<EnemyStates>
     {
         Transform targetWP = fsm.wayPoints[currentWP];
 
-        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 0.5f)
+        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 1f)
         {
             MoveTowards(fsm.wayPoints[currentWP].position);
         }
@@ -45,22 +45,27 @@ public class EnemyPatrolState : State<EnemyStates>
         var dir = targetPosition - fsm.transform.position;
         var desired = dir.normalized * fsm.speed;
 
-        // Sumar avoidance a la direccion deseada ANTES de calcular el steer
-        var avoidance = fsm.ComputeAvoidance();
-        desired += avoidance;
+        var avoidForce = fsm.ComputeAvoidance();
 
-        // Steering igual que en Pursuit
-        var steer = desired - currentSpeed;
+        Vector3 steer;
+        if (avoidForce.HasValue)
+        {
+            // Cuando hay obstáculo, evasión reemplaza a desired
+            // avoidForce ya trae el weight (0 a 1), lo escaleamos a speed
+            var evadeDesired = avoidForce.Value.normalized * fsm.speed;
+            steer = evadeDesired - currentSpeed;
+        }
+        else
+        {
+            steer = desired - currentSpeed;
+        }
+
         steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
-
         currentSpeed += steer * Time.deltaTime;
         currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
-
         currentSpeed.y = 0;
 
         fsm.transform.position += currentSpeed * Time.deltaTime;
-
-        // Rotar hacia donde se mueve
 
         if (currentSpeed.sqrMagnitude > 0.001f)
         {

@@ -30,13 +30,6 @@ public class EnemyFSM : MonoBehaviour
 
     public bool isEscaper;
 
-    [SerializeField, Header("ObsAvoid")]
-    public EnemyObstacleAvoidance obsAvoid;
-    public float hitboxRadius;
-    public float hitboxAngle;
-    public float hitboxOffset;
-    public int maxAvoidableObs;
-    public LayerMask obsMask;
 
     public float maxForce = 5f;
     public float rotationSpeed = 5f;
@@ -44,25 +37,22 @@ public class EnemyFSM : MonoBehaviour
 
     public float slowingRadius = 15f;
 
-    public float avoidanceDistance = 10f;  // que tan lejos detecta obstaculos
-    public float avoidanceRadius = 10f; // grosor del SphereCast
-    public float avoidanceWeight = 2f;  // que tan fuerte es la evasion
-
+    private Collider[] colliders;
+    public float personalArea;
+    public float avoidanceRadius;
+    public int colliderCapacity;
+    public LayerMask obsMask;
 
     public LineOfSight ViewLoS => viewLoS;
     public LineOfSight SpecificLoS => specificLoS;
 
     private void Start()
     {
-
+        colliders = new Collider[colliderCapacity];
         hurtbox.enabled = false;
         _sm = new StateMachine<EnemyStates>();
 
-        obsAvoid = new EnemyObstacleAvoidance(transform, hitboxRadius, hitboxAngle, hitboxOffset, obsMask, maxAvoidableObs);
-
         State<EnemyStates> idle = new EnemyIdleState(this, _sm);
-
-
         State<EnemyStates> patrol = null;
         State <EnemyStates> specificSee = null;
         State <EnemyStates> pursuit = null;
@@ -122,48 +112,41 @@ public class EnemyFSM : MonoBehaviour
         _sm.Update();
     }
 
-    public Vector3 ComputeAvoidance()
+    public Vector3? ComputeAvoidance()
     {
-        var forward = transform.forward;
-        var right = transform.right;
+        int count = Physics.OverlapSphereNonAlloc(transform.position, avoidanceRadius, colliders, obsMask);
 
-        var directions = new Vector3[]
+        Collider nearestColl = null;
+        float nearestDistance = float.MaxValue;
+        Vector3 nearestClosestPoint = Vector3.zero;
+
+        for (int i = 0; i < count; i++)
         {
-        forward,
-        (forward + right * 0.5f).normalized,
-        (forward - right * 0.5f).normalized
-        };
+            Vector3 closestPoint = colliders[i].ClosestPoint(transform.position);
+            closestPoint.y = transform.position.y;
 
-        var totalAvoidance = Vector3.zero;
-        bool found = false;
+            Vector3 dirToColl = closestPoint - transform.position;
+            float distance = dirToColl.magnitude;
 
-        foreach (var dir in directions)
-        {
-            var hits = Physics.SphereCastAll(
-                transform.position,
-                avoidanceRadius,
-                dir,
-                avoidanceDistance,
-                obsMask);
-
-            foreach (var hit in hits)
+            if (distance < nearestDistance)
             {
-                var avoidDir = Vector3.Cross(dir, Vector3.up).normalized;
-
-                if (Vector3.Dot(avoidDir, hit.normal) < 0)
-                    avoidDir = -avoidDir;
-
-                var strength = 1f - (hit.distance / avoidanceDistance);
-
-                totalAvoidance += avoidDir * speed * strength * avoidanceWeight;
-                found = true;
+                nearestColl = colliders[i];
+                nearestDistance = distance;
+                nearestClosestPoint = closestPoint;
             }
         }
 
-        if (!found) return Vector3.zero;
+        if (nearestColl == null) return null;
 
-        // Promediar para evitar que multiples hits se cancelen entre si
-        return Vector3.ClampMagnitude(totalAvoidance, speed * avoidanceWeight);
+        Vector3 relativePos = transform.InverseTransformPoint(nearestClosestPoint);
+        Vector3 dirToObstacle = (nearestClosestPoint - transform.position).normalized;
+        Vector3 avoidDir = relativePos.x < 0
+            ? Vector3.Cross(transform.up, dirToObstacle)
+            : -Vector3.Cross(transform.up, dirToObstacle);
+
+        float weight = (avoidanceRadius - Mathf.Clamp(nearestDistance - personalArea, 0, avoidanceRadius)) / avoidanceRadius;
+
+        return avoidDir * weight;
     }
 
     private void OnDestroy()

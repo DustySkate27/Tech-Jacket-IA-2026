@@ -47,10 +47,20 @@ public class EnemyEvadeState : State<EnemyStates>
         var dir = fsm.transform.position - futurePosition;
         var desired = dir.normalized * fsm.speed;
 
-        var avoidance = fsm.ComputeAvoidance();
-        desired += avoidance;
+        var avoidForce = fsm.ComputeAvoidance();
 
-        var steer = desired - currentSpeed;
+        Vector3 steer;
+        if (avoidForce.HasValue)
+        {
+            // Cuando hay obstáculo, evasión reemplaza a desired
+            // avoidForce ya trae el weight (0 a 1), lo escaleamos a speed
+            var evadeDesired = avoidForce.Value.normalized * fsm.speed;
+            steer = evadeDesired - currentSpeed;
+        }
+        else
+        {
+            steer = desired - currentSpeed;
+        }
         steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
 
         currentSpeed += steer * Time.deltaTime;
