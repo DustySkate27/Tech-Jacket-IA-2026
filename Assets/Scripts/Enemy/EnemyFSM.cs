@@ -10,12 +10,14 @@ public enum EnemyStates
     Flee,
     Seek,
     Arrive,
+    Attack
 }
 
 public class EnemyFSM : MonoBehaviour
 {
     [SerializeField] public Transform target;
     [SerializeField] public Rigidbody targetRB;
+    [SerializeField] public BoxCollider hurtbox;
 
     public int speed;
     [SerializeField] public Transform[] wayPoints;
@@ -48,6 +50,8 @@ public class EnemyFSM : MonoBehaviour
 
     private void Start()
     {
+
+        hurtbox.enabled = false;
         _sm = new StateMachine<EnemyStates>();
 
         obsAvoid = new EnemyObstacleAvoidance(transform, hitboxRadius, hitboxAngle, hitboxOffset, obsMask, maxAvoidableObs);
@@ -60,6 +64,7 @@ public class EnemyFSM : MonoBehaviour
         State <EnemyStates> pursuit = null;
         State<EnemyStates> flee = null;
         State<EnemyStates> arrive = null;
+        State<EnemyStates> attack = null;
 
         if (isEscaper)
         {
@@ -73,6 +78,7 @@ public class EnemyFSM : MonoBehaviour
             specificSee = new EnemySeekState(this, _sm); 
             pursuit = new EnemyPursuitState(this, _sm);
             arrive = new EnemyArriveState(this, _sm);
+            attack = new EnemyAttackState(this, _sm);
         }
 
         patrol.AddTransition(idle, EnemyStates.Idle);
@@ -98,7 +104,9 @@ public class EnemyFSM : MonoBehaviour
             specificSee.AddTransition(pursuit, EnemyStates.Pursuit);
             specificSee.AddTransition(patrol, EnemyStates.Patrol);
             pursuit.AddTransition(arrive, EnemyStates.Arrive);
-            arrive.AddTransition(specificSee, EnemyStates.Idle);
+            arrive.AddTransition(attack, EnemyStates.Attack);
+            attack.AddTransition(pursuit, EnemyStates.Pursuit);
+            attack.AddTransition(idle, EnemyStates.Idle);
         }
         
 
@@ -114,4 +122,5 @@ public class EnemyFSM : MonoBehaviour
     {
         _sm = null;
     }
+
 }

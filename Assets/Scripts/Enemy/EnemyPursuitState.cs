@@ -122,7 +122,7 @@ public class EnemyPursuitState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, fsm.target.position) < 20f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) < fsm.specificLoS.range)
         {
             _sm.ChangeState(EnemyStates.Arrive);
         }

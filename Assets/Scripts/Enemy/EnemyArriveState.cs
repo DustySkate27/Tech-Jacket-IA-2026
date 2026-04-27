@@ -34,7 +34,6 @@ public class EnemyArriveState : State<EnemyStates>
             desiredSpeed = fsm.speed;
         }
 
-        Debug.Log(desiredSpeed);
 
         var desired = toTarget.normalized * desiredSpeed;
 
@@ -61,9 +60,9 @@ public class EnemyArriveState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 20f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) <= fsm.specificLoS.range)
         {
-            _sm.ChangeState(EnemyStates.Idle);
+            _sm.ChangeState(EnemyStates.Attack);
         }
     }
 }
