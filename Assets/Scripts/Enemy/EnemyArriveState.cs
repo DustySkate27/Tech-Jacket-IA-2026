@@ -44,7 +44,7 @@ public class EnemyArriveState : State<EnemyStates>
         currentSpeed += steer * Time.deltaTime;
         currentSpeed = currentSpeed = Vector3.ClampMagnitude(currentSpeed, desiredSpeed);
 
-        fsm.transform.position += currentSpeed * Time.deltaTime;
+        fsm.transform.position += currentSpeed * Time.deltaTime * fsm.speed;
 
         if (currentSpeed.sqrMagnitude > 0.001f)
         {
@@ -63,7 +63,7 @@ public class EnemyArriveState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 20f)
         {
-            _sm.ChangeState(EnemyStates.Arrive);
+            _sm.ChangeState(EnemyStates.Idle);
         }
     }
 }

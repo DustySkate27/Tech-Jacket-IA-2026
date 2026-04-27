@@ -6,6 +6,7 @@ public enum EnemyStates
     Patrol,
     ObstacleAvoidance,
     SpecificSee,
+    Pursuit,
     Flee,
     Seek,
     Arrive,
@@ -23,7 +24,7 @@ public class EnemyFSM : MonoBehaviour
     private StateMachine<EnemyStates> _sm;
 
     [SerializeField] private LineOfSight viewLoS;
-    [SerializeField] private LineOfSight specificLoS;
+    [SerializeField] public LineOfSight specificLoS;
 
     public bool isEscaper;
 
@@ -56,6 +57,7 @@ public class EnemyFSM : MonoBehaviour
 
         State<EnemyStates> patrol = null;
         State <EnemyStates> specificSee = null;
+        State <EnemyStates> pursuit = null;
         State<EnemyStates> flee = null;
         State<EnemyStates> arrive = null;
 
@@ -68,7 +70,8 @@ public class EnemyFSM : MonoBehaviour
         else
         {
             patrol = new EnemyPatrolState(this, _sm);
-            specificSee = new EnemyPursuitState(this, _sm);
+            specificSee = new EnemySeekState(this, _sm); 
+            pursuit = new EnemyPursuitState(this, _sm);
             arrive = new EnemyArriveState(this, _sm);
         }
 
@@ -86,14 +89,16 @@ public class EnemyFSM : MonoBehaviour
 
             specificSee.AddTransition(idle, EnemyStates.Idle);
             specificSee.AddTransition(flee, EnemyStates.Flee);
+
             flee.AddTransition(idle, EnemyStates.Idle);
         }
         else
         {
             patrol.AddTransition(specificSee, EnemyStates.SpecificSee);
-            specificSee.AddTransition(arrive, EnemyStates.Arrive);
+            specificSee.AddTransition(pursuit, EnemyStates.Pursuit);
+            specificSee.AddTransition(patrol, EnemyStates.Patrol);
+            pursuit.AddTransition(arrive, EnemyStates.Arrive);
             arrive.AddTransition(specificSee, EnemyStates.Idle);
-
         }
         
 
