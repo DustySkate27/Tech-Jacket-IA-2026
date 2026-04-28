@@ -53,7 +53,7 @@ public class EnemyAttackState : State<EnemyStates>
     }
     void EndAttack()
     {
-        if (fsm.SpecificLoS.CheckRange(fsm.target))
+        if (fsm.SpecificLoS.CheckRange(fsm.target) && fsm.SpecificLoS.CheckAngle(fsm.target) && fsm.SpecificLoS.CheckView(fsm.target))
             _sm.ChangeState(EnemyStates.Pursuit);
         else
             _sm.ChangeState(EnemyStates.Idle);

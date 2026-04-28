@@ -22,41 +22,34 @@ public class EnemyFleeState : State<EnemyStates>
     {
         var toTarget = fsm.target.position - fsm.transform.position;
 
-        var dir = -toTarget;
+        var dir = -toTarget; //direccion opuesta al objetivo
         
         var desired = dir.normalized * fsm.speed;
 
-        var avoidForce = fsm.ComputeAvoidance();
-        Vector3 steer;
-        if (avoidForce.HasValue)
+        var avoidForce = fsm.ComputeAvoidance(); //Ejecución de Obstacle Avoidance
+
+        Vector3 steer; //Inicializa el virado
+        if (avoidForce.HasValue) //Si existe un obstáculo, obtiene la dirección de evasión
         {
-            // Cuando hay obstáculo, evasión reemplaza a desired
-            // avoidForce ya trae el weight (0 a 1), lo escaleamos a speed
-            var evadeDesired = avoidForce.Value.normalized * fsm.speed;
-            steer = evadeDesired - currentSpeed;
+            var evadeDesired = avoidForce.Value.normalized * fsm.speed; //Inicializa la evasión objetivo multiplicando la fuerza de evasión normalizada por la velocidad.
+            steer = evadeDesired - currentSpeed; //El virado es equivalente a la diferencia entre la evasión objetivo y la dirección actual
         }
-        else
+        else //Si no existe
         {
-            steer = desired - currentSpeed;
+            steer = desired - currentSpeed; //El virado es equivalente a la dirección objetivo menos la actual.
         }
 
-        steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
+        steer = Vector3.ClampMagnitude(steer, fsm.maxForce); //Camplea la magnitud de la dirección entre si mismo y la potencia máxima de virado.
+        currentSpeed += steer * Time.deltaTime; //le suma a la dirección actual el virado a lo largo del tiempo.
+        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed); //Clampea la magnitud de la dirección actual entre si misma y la velocidad.
+        currentSpeed.y = 0; //Neutraliza la altura de la dirección actual
 
-        currentSpeed += steer * Time.deltaTime;
-        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
+        fsm.transform.position += currentSpeed * Time.deltaTime; //Suma a la posición.
 
-        currentSpeed.y = 0;
-
-        fsm.transform.position += currentSpeed * Time.deltaTime;
-
-        if (currentSpeed.sqrMagnitude > 0.001f)
+        if (currentSpeed.sqrMagnitude > 0.001f) //Si la magnitud al cuadrado es menor al un número infimo
         {
-            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized);
-            fsm.transform.rotation = Quaternion.Slerp(
-                fsm.transform.rotation,
-                targetRotation,
-                fsm.rotationSpeed * Time.deltaTime
-            );
+            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized); //Inicializa rotacion objetivo
+            fsm.transform.rotation = Quaternion.Slerp(fsm.transform.rotation, targetRotation, fsm.rotationSpeed * Time.deltaTime); //La iguala a la rotacion del transform
         }
 
         TargetDistanceCheck();
