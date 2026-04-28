@@ -1,6 +1,8 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using UnityEditor.SearchService;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEditor.PlayerSettings;
 
 public class TreePlayer : MonoBehaviour
@@ -66,6 +68,7 @@ public class TreePlayer : MonoBehaviour
         Debug.Log("Objetivo cumplido.");
         Destroy(target);
         target = null;
+        SceneManager.LoadScene("SeekTest");
     }
 
 

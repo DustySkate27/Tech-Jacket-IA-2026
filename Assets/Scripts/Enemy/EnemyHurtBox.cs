@@ -7,7 +7,7 @@ public class EnemyHurtBox : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneManager.LoadScene("TestRoulette");
+            SceneManager.LoadScene("SeekTest");
             Debug.Log("Player hit!");
         }
     }
