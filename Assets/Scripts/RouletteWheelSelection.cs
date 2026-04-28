@@ -1,12 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISteering
-{
-    public Vector3 GetDir( Vector3 currentSpeed );
-}
-
-
 public class MyRandom
 {
     public static T RouletteWheelSelection<T>(Dictionary<T, float> elemens)
@@ -24,11 +18,5 @@ public class MyRandom
         }
 
         return default;
-
-        // 2 + 10 + 30 + 100 = 142
-        //20
-        // 20 -2 = 18
-        // 18 - 10 = 8
-        // 8 - 30 = -22
     }
 }

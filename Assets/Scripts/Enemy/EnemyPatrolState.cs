@@ -9,9 +9,7 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private Vector3 currentSpeed;
 
-    public EnemyPatrolState(
-        EnemyFSM fsm,
-        StateMachine<EnemyStates> sm) : base(sm)
+    public EnemyPatrolState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         this.fsm = fsm;
         currentWP = fsm.currentWP;
@@ -28,53 +26,47 @@ public class EnemyPatrolState : State<EnemyStates>
     {
         Transform targetWP = fsm.wayPoints[currentWP];
 
-        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 1f)
+        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
         {
-            MoveTowards(fsm.wayPoints[currentWP].position);
+            MoveTowards(fsm.wayPoints[currentWP].position); //Se acercan al waypoint asignado
         }
         else
         {
-            ChooseNextWaypoint();
+            ChooseNextWaypoint(); //Si no, van al próximo.
         }
         
-        SawTheTarget();
+        SawTheTarget(); //Si ven al player cambia su estado
     }
 
-    private void MoveTowards(Vector3 targetPosition)
+    private void MoveTowards(Vector3 targetPosition) //Obstacle Avoidance
     {
-        var dir = targetPosition - fsm.transform.position;
-        var desired = dir.normalized * fsm.speed;
+        var dir = targetPosition - fsm.transform.position; //Direccion del objetivo.
+        var desired = dir.normalized * fsm.speed; //Direccion a la que va a ir el enemigo
 
-        var avoidForce = fsm.ComputeAvoidance();
+        var avoidForce = fsm.ComputeAvoidance(); //Ejecución de Obstacle Avoidance
 
-        Vector3 steer;
-        if (avoidForce.HasValue)
+        Vector3 steer; //Inicializa el virado
+        if (avoidForce.HasValue) //Si existe un obstáculo, obtiene la dirección de evasión
         {
-            // Cuando hay obstáculo, evasión reemplaza a desired
-            // avoidForce ya trae el weight (0 a 1), lo escaleamos a speed
-            var evadeDesired = avoidForce.Value.normalized * fsm.speed;
-            steer = evadeDesired - currentSpeed;
+            var evadeDesired = avoidForce.Value.normalized * fsm.speed; //Inicializa la evasión objetivo multiplicando la fuerza de evasión normalizada por la velocidad.
+            steer = evadeDesired - currentSpeed; //El virado es equivalente a la diferencia entre la evasión objetivo y la dirección actual
         }
-        else
+        else //Si no existe
         {
-            steer = desired - currentSpeed;
+            steer = desired - currentSpeed; //El virado es equivalente a la dirección objetivo menos la actual.
         }
 
-        steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
-        currentSpeed += steer * Time.deltaTime;
-        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
-        currentSpeed.y = 0;
+        steer = Vector3.ClampMagnitude(steer, fsm.maxForce); //Camplea la magnitud de la dirección entre si mismo y la potencia máxima de virado.
+        currentSpeed += steer * Time.deltaTime; //le suma a la dirección actual el virado a lo largo del tiempo.
+        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed); //Clampea la magnitud de la dirección actual entre si misma y la velocidad.
+        currentSpeed.y = 0; //Neutraliza la altura de la dirección actual
 
-        fsm.transform.position += currentSpeed * Time.deltaTime;
+        fsm.transform.position += currentSpeed * Time.deltaTime; //Suma a la posición.
 
-        if (currentSpeed.sqrMagnitude > 0.001f)
+        if (currentSpeed.sqrMagnitude > 0.001f) //Si la magnitud al cuadrado es menor al un número infimo
         {
-            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized);
-            fsm.transform.rotation = Quaternion.Slerp(
-                fsm.transform.rotation,
-                targetRotation,
-                fsm.rotationSpeed * Time.deltaTime
-            );
+            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized); //Inicializa rotacion objetivo
+            fsm.transform.rotation = Quaternion.Slerp(fsm.transform.rotation, targetRotation, fsm.rotationSpeed * Time.deltaTime); //La iguala a la rotacion del transform
         }
     }
 
