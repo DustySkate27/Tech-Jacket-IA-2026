@@ -3,20 +3,17 @@ using UnityEngine;
 
 public class WeightedPathfinding
 {
-    public static List<PF_WeightNode> BFS(PF_WeightNode start, PF_WeightNode end)
+    public static List<PF_WNode> Dijkstra(PF_WNode start, PF_WNode end)
     {
-        var frontier = new Queue<PF_WeightNode>();
-        frontier.Enqueue(start);
+        var cameFrom = new Dictionary<PF_WNode, (PF_WNode,float)>();
+        cameFrom[start] = (null, 0);
 
-        var cameFrom = new Dictionary<PF_WeightNode, (PF_WeightNode,float)>();
-        cameFrom[start] = (null, float.PositiveInfinity);
-
-        var priorityQueue = new PriorityQueue<PF_WeightNode>();
+        var priorityQueue = new PriorityQueue<PF_WNode>();
         priorityQueue.Enqueue(start, 0);
 
-        while (frontier.Count > 0)
+        while (!priorityQueue.IsEmpty)
         {
-            PF_WeightNode current = frontier.Dequeue();
+            PF_WNode current = priorityQueue.Dequeue();
             current.SetColor(Color.cyan);
 
             if (current == end)
@@ -26,20 +23,29 @@ public class WeightedPathfinding
 
             foreach (var next in current.Neighbors)
             {
-                if (cameFrom.ContainsKey(next)) continue;
-                frontier.Enqueue(next);
-                cameFrom[next] = (current, current.cost);
+                float newCost = cameFrom[current].Item2 + next.cost;
+                if (cameFrom.ContainsKey(next) && newCost >= cameFrom[next].Item2) continue;
+                priorityQueue.Enqueue(next, newCost);
+                cameFrom[next] = (current, newCost);
             }
             
         }
-        PF_WeightNode newCurrent = end;
-        var path = new List<PF_WeightNode>();
-        while (newCurrent != null)
+        PF_WNode newCurrent = end;
+        var path = new List<PF_WNode>();
+
+        if (!cameFrom.ContainsKey(end))
         {
-            path.Add(newCurrent);
-            newCurrent = cameFrom[newCurrent];
+            Debug.LogWarning("No se encontró camino al destino.");
         }
-        path.Reverse();
+        else
+        {
+            while (newCurrent != null)
+            {
+                path.Add(newCurrent);
+                newCurrent = cameFrom[newCurrent].Item1;
+            }
+            path.Reverse();
+        }
         return path;
     }
 }

@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PF_WeightedNPC : MonoBehaviour
+public class PF_WNPC : MonoBehaviour
 {
-    public PF_WeightNode start, end;
+    public PF_WNode start, end;
     public float speed;
-    private List<PF_WeightNode> path = new();
+    private List<PF_WNode> path = new();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,7 +26,7 @@ public class PF_WeightedNPC : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            path = WeightedPathfinding.BFS(start, end);
+            path = WeightedPathfinding.Dijkstra(start, end);
             for (int i = 0; i < path.Count; i++)
             {
                 path[i].SetColor(Color.Lerp(Color.red, Color.yellow, (float)i / path.Count));

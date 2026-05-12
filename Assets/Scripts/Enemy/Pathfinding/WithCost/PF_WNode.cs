@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PF_WeightNode : MonoBehaviour
+public class PF_WNode : MonoBehaviour
 {
-    [SerializeField] List<PF_WeightNode> neighbors = new();
+    [SerializeField] List<PF_WNode> neighbors = new();
     [SerializeField] public float cost;
     [SerializeField] private int x, y;
     private Renderer rend;
-    public List<PF_WeightNode> Neighbors => neighbors;
+    public List<PF_WNode> Neighbors => neighbors;
 
     public int X => x;
     public int Y => y;
@@ -22,7 +22,7 @@ public class PF_WeightNode : MonoBehaviour
         this.x = x;
         this.y = y;
     }
-    public void SetNeighbors(List<PF_WeightNode> neighbors)
+    public void SetNeighbors(List<PF_WNode> neighbors)
     {
         this.neighbors = neighbors;
     }
