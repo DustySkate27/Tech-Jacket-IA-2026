@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -160,7 +160,7 @@ MonoBehaviour:
   - {fileID: 1608434259}
   - {fileID: 1741104988}
   - {fileID: 418847587}
-  cost: 0
+  cost: 1000
   x: 1
   y: 3
 --- !u!135 &3142422
@@ -411,7 +411,7 @@ MonoBehaviour:
   - {fileID: 1681376983}
   - {fileID: 1034708792}
   - {fileID: 1940386558}
-  cost: 0
+  cost: 1
   x: 1
   y: 8
 --- !u!135 &11408549
@@ -660,7 +660,7 @@ MonoBehaviour:
   - {fileID: 834501886}
   - {fileID: 1479594407}
   - {fileID: 139103047}
-  cost: 0
+  cost: 1
   x: 9
   y: 4
 --- !u!135 &37022427
@@ -1334,8 +1334,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 63574436}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.25739235, y: 0.023188172, z: -0.006178469, w: 0.966009}
-  m_LocalPosition: {x: 80.67921, y: 33.886017, z: -45.146484}
+  m_LocalRotation: {x: -0.3845926, y: -0.013294139, z: 0.005539526, w: -0.9229741}
+  m_LocalPosition: {x: 54.292995, y: 48.432503, z: -41.322166}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1377,7 +1377,7 @@ MonoBehaviour:
   - {fileID: 11408548}
   - {fileID: 613447630}
   - {fileID: 1390140504}
-  cost: 0
+  cost: 1
   x: 0
   y: 8
 --- !u!135 &81931333
@@ -1503,7 +1503,7 @@ MonoBehaviour:
   - {fileID: 1537739676}
   - {fileID: 1044268601}
   - {fileID: 817387869}
-  cost: 0
+  cost: 1000
   x: 5
   y: 3
 --- !u!135 &97213611
@@ -1629,7 +1629,7 @@ MonoBehaviour:
   - {fileID: 989063507}
   - {fileID: 956211122}
   - {fileID: 1144122781}
-  cost: 100
+  cost: 1000
   x: 3
   y: 2
 --- !u!135 &114593655
@@ -1732,7 +1732,7 @@ GameObject:
   - component: {fileID: 116712741}
   - component: {fileID: 116712740}
   m_Layer: 0
-  m_Name: WNodePrefab(Clone)
+  m_Name: DEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1754,7 +1754,7 @@ MonoBehaviour:
   - {fileID: 1314605899}
   - {fileID: 548116238}
   - {fileID: 1107875846}
-  cost: 0
+  cost: 1
   x: 4
   y: 9
 --- !u!135 &116712741
@@ -2129,7 +2129,7 @@ MonoBehaviour:
   - {fileID: 1790476579}
   - {fileID: 1144122781}
   - {fileID: 549652029}
-  cost: 0
+  cost: 1
   x: 3
   y: 4
 --- !u!135 &129839487
@@ -2253,7 +2253,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 511959638}
   - {fileID: 1616276370}
-  cost: 0
+  cost: 1
   x: 9
   y: 0
 --- !u!135 &132535404
@@ -2378,7 +2378,7 @@ MonoBehaviour:
   - {fileID: 1644690317}
   - {fileID: 37022426}
   - {fileID: 243060540}
-  cost: 100
+  cost: 1
   x: 9
   y: 5
 --- !u!135 &139103048
@@ -2504,7 +2504,7 @@ MonoBehaviour:
   - {fileID: 1179573342}
   - {fileID: 1867400784}
   - {fileID: 587247413}
-  cost: 0
+  cost: 1
   x: 8
   y: 8
 --- !u!135 &154553551
@@ -2630,7 +2630,7 @@ MonoBehaviour:
   - {fileID: 523590666}
   - {fileID: 1579395147}
   - {fileID: 1233072791}
-  cost: 0
+  cost: 1
   x: 6
   y: 7
 --- !u!135 &169933722
@@ -3006,7 +3006,7 @@ MonoBehaviour:
   - {fileID: 378735199}
   - {fileID: 532878147}
   - {fileID: 1107875846}
-  cost: 0
+  cost: 1
   x: 4
   y: 7
 --- !u!135 &192043775
@@ -3114,7 +3114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   start: {fileID: 1130254727}
   end: {fileID: 1178831433}
-  speed: 5
+  speed: 10
 --- !u!1 &217962092
 GameObject:
   m_ObjectHideFlags: 0
@@ -3152,7 +3152,7 @@ MonoBehaviour:
   - {fileID: 1479594407}
   - {fileID: 944214493}
   - {fileID: 834501886}
-  cost: 0
+  cost: 1
   x: 8
   y: 3
 --- !u!135 &217962094
@@ -3277,7 +3277,7 @@ MonoBehaviour:
   - {fileID: 732778489}
   - {fileID: 587247413}
   - {fileID: 1162503949}
-  cost: 0
+  cost: 1
   x: 7
   y: 9
 --- !u!135 &220772864
@@ -3651,7 +3651,7 @@ MonoBehaviour:
   - {fileID: 669112490}
   - {fileID: 139103047}
   - {fileID: 898971486}
-  cost: 0
+  cost: 1
   x: 9
   y: 6
 --- !u!135 &243060541
@@ -4025,7 +4025,7 @@ MonoBehaviour:
   - {fileID: 1940386558}
   - {fileID: 1314605899}
   - {fileID: 1681376983}
-  cost: 0
+  cost: 1
   x: 2
   y: 9
 --- !u!135 &264773624
@@ -4275,7 +4275,7 @@ MonoBehaviour:
   - {fileID: 944214493}
   - {fileID: 1616276370}
   - {fileID: 1479594407}
-  cost: 0
+  cost: 1
   x: 9
   y: 2
 --- !u!135 &287448570
@@ -4401,7 +4401,7 @@ MonoBehaviour:
   - {fileID: 2128668060}
   - {fileID: 1691378595}
   - {fileID: 989063507}
-  cost: 0
+  cost: 1
   x: 4
   y: 1
 --- !u!135 &300932768
@@ -4652,7 +4652,7 @@ MonoBehaviour:
   - {fileID: 1476832718}
   - {fileID: 1537739676}
   - {fileID: 390878415}
-  cost: 0
+  cost: 1
   x: 6
   y: 4
 --- !u!135 &360651530
@@ -4903,7 +4903,7 @@ MonoBehaviour:
   - {fileID: 1266740699}
   - {fileID: 1790476579}
   - {fileID: 532878147}
-  cost: 0
+  cost: 5
   x: 4
   y: 5
 --- !u!135 &377922751
@@ -5153,7 +5153,7 @@ MonoBehaviour:
   - {fileID: 169933721}
   - {fileID: 919515555}
   - {fileID: 2044961745}
-  cost: 0
+  cost: 1
   x: 5
   y: 7
 --- !u!135 &378735200
@@ -5404,7 +5404,7 @@ MonoBehaviour:
   - {fileID: 1290752915}
   - {fileID: 360651529}
   - {fileID: 1579395147}
-  cost: 100
+  cost: 5
   x: 6
   y: 5
 --- !u!135 &390878416
@@ -5779,7 +5779,7 @@ MonoBehaviour:
   - {fileID: 1794629082}
   - {fileID: 3142421}
   - {fileID: 427689363}
-  cost: 0
+  cost: 1
   x: 1
   y: 4
 --- !u!135 &418847588
@@ -6030,7 +6030,7 @@ MonoBehaviour:
   - {fileID: 1440537807}
   - {fileID: 418847587}
   - {fileID: 852726445}
-  cost: 0
+  cost: 1
   x: 1
   y: 5
 --- !u!135 &427689364
@@ -6155,7 +6155,7 @@ MonoBehaviour:
   - {fileID: 1315117691}
   - {fileID: 1691378595}
   - {fileID: 956211122}
-  cost: 0
+  cost: 1
   x: 3
   y: 0
 --- !u!135 &436164017
@@ -6754,7 +6754,7 @@ MonoBehaviour:
   - {fileID: 1372950784}
   - {fileID: 132535403}
   - {fileID: 1853893662}
-  cost: 0
+  cost: 1
   x: 8
   y: 0
 --- !u!135 &511959639
@@ -6880,7 +6880,7 @@ MonoBehaviour:
   - {fileID: 1867400784}
   - {fileID: 2032834238}
   - {fileID: 1162503949}
-  cost: 0
+  cost: 1
   x: 7
   y: 7
 --- !u!135 &523590667
@@ -7131,7 +7131,7 @@ MonoBehaviour:
   - {fileID: 919515555}
   - {fileID: 377922750}
   - {fileID: 192043774}
-  cost: 0
+  cost: 5
   x: 4
   y: 6
 --- !u!135 &532878148
@@ -7256,7 +7256,7 @@ MonoBehaviour:
   - {fileID: 116712740}
   - {fileID: 732778489}
   - {fileID: 2044961745}
-  cost: 0
+  cost: 1
   x: 5
   y: 9
 --- !u!135 &548116239
@@ -7382,7 +7382,7 @@ MonoBehaviour:
   - {fileID: 377922750}
   - {fileID: 129839486}
   - {fileID: 846324090}
-  cost: 0
+  cost: 5
   x: 3
   y: 5
 --- !u!135 &549652030
@@ -7756,7 +7756,7 @@ MonoBehaviour:
   - {fileID: 220772863}
   - {fileID: 1905217617}
   - {fileID: 154553550}
-  cost: 0
+  cost: 1
   x: 8
   y: 9
 --- !u!135 &587247414
@@ -7882,7 +7882,7 @@ MonoBehaviour:
   - {fileID: 1567134362}
   - {fileID: 786689984}
   - {fileID: 1741104988}
-  cost: 0
+  cost: 1
   x: 1
   y: 1
 --- !u!135 &610105492
@@ -8211,8 +8211,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   start: {fileID: 1237931187}
-  end: {fileID: 890097336}
-  speed: 5
+  end: {fileID: 116712740}
+  speed: 10
 --- !u!1 &613447629
 GameObject:
   m_ObjectHideFlags: 0
@@ -8249,7 +8249,7 @@ MonoBehaviour:
   - {fileID: 1034708792}
   - {fileID: 890097336}
   - {fileID: 81931332}
-  cost: 0
+  cost: 1
   x: 0
   y: 7
 --- !u!135 &613447631
@@ -8873,7 +8873,7 @@ MonoBehaviour:
   - {fileID: 243060540}
   - {fileID: 1644690317}
   - {fileID: 1867400784}
-  cost: 0
+  cost: 5
   x: 8
   y: 6
 --- !u!135 &669112491
@@ -9354,7 +9354,7 @@ MonoBehaviour:
   - {fileID: 114593654}
   - {fileID: 1567134362}
   - {fileID: 1608434259}
-  cost: 100
+  cost: 1000
   x: 2
   y: 2
 --- !u!135 &730119063
@@ -9479,7 +9479,7 @@ MonoBehaviour:
   - {fileID: 548116238}
   - {fileID: 220772863}
   - {fileID: 1233072791}
-  cost: 0
+  cost: 1
   x: 6
   y: 9
 --- !u!135 &732778490
@@ -9823,7 +9823,7 @@ MonoBehaviour:
   - {fileID: 217962093}
   - {fileID: 1192194708}
   - {fileID: 1476832718}
-  cost: 0
+  cost: 1000
   x: 7
   y: 3
 --- !u!135 &745660572
@@ -9949,7 +9949,7 @@ MonoBehaviour:
   - {fileID: 816001898}
   - {fileID: 1353772910}
   - {fileID: 1064456692}
-  cost: 0
+  cost: 1
   x: 6
   y: 1
 --- !u!135 &758712656
@@ -10323,7 +10323,7 @@ MonoBehaviour:
   - {fileID: 1237931187}
   - {fileID: 1315117691}
   - {fileID: 610105491}
-  cost: 0
+  cost: 1
   x: 1
   y: 0
 --- !u!135 &786689985
@@ -10449,7 +10449,7 @@ MonoBehaviour:
   - {fileID: 1853893662}
   - {fileID: 1372950784}
   - {fileID: 1192194708}
-  cost: 0
+  cost: 1
   x: 7
   y: 1
 --- !u!135 &816001899
@@ -10575,7 +10575,7 @@ MonoBehaviour:
   - {fileID: 360651529}
   - {fileID: 97213610}
   - {fileID: 1266740699}
-  cost: 0
+  cost: 1
   x: 5
   y: 4
 --- !u!135 &817387870
@@ -10701,7 +10701,7 @@ MonoBehaviour:
   - {fileID: 37022426}
   - {fileID: 217962093}
   - {fileID: 1644690317}
-  cost: 0
+  cost: 1
   x: 8
   y: 4
 --- !u!135 &834501887
@@ -10952,7 +10952,7 @@ MonoBehaviour:
   - {fileID: 532878147}
   - {fileID: 549652029}
   - {fileID: 1049795215}
-  cost: 0
+  cost: 5
   x: 3
   y: 6
 --- !u!135 &846324091
@@ -11078,7 +11078,7 @@ MonoBehaviour:
   - {fileID: 1901293190}
   - {fileID: 427689363}
   - {fileID: 1034708792}
-  cost: 0
+  cost: 1
   x: 1
   y: 6
 --- !u!135 &852726446
@@ -11204,7 +11204,7 @@ MonoBehaviour:
   - {fileID: 1049795215}
   - {fileID: 1901293190}
   - {fileID: 1681376983}
-  cost: 0
+  cost: 1
   x: 2
   y: 7
 --- !u!135 &862149377
@@ -11681,7 +11681,7 @@ GameObject:
   - component: {fileID: 890097337}
   - component: {fileID: 890097336}
   m_Layer: 0
-  m_Name: DEnd
+  m_Name: WNodePrefab(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11703,7 +11703,7 @@ MonoBehaviour:
   - {fileID: 852726445}
   - {fileID: 981395789}
   - {fileID: 613447630}
-  cost: 0
+  cost: 1
   x: 0
   y: 6
 --- !u!135 &890097337
@@ -11828,7 +11828,7 @@ MonoBehaviour:
   - {fileID: 1867400784}
   - {fileID: 243060540}
   - {fileID: 1179573342}
-  cost: 0
+  cost: 1
   x: 9
   y: 7
 --- !u!135 &898971487
@@ -12078,7 +12078,7 @@ MonoBehaviour:
   - {fileID: 418847587}
   - {fileID: 1521763904}
   - {fileID: 981395789}
-  cost: 0
+  cost: 1
   x: 0
   y: 4
 --- !u!135 &912799953
@@ -12454,7 +12454,7 @@ MonoBehaviour:
   - {fileID: 1579395147}
   - {fileID: 1266740699}
   - {fileID: 378735199}
-  cost: 0
+  cost: 5
   x: 5
   y: 6
 --- !u!135 &919515556
@@ -12953,7 +12953,7 @@ MonoBehaviour:
   - {fileID: 287448569}
   - {fileID: 1853893662}
   - {fileID: 217962093}
-  cost: 0
+  cost: 1
   x: 8
   y: 2
 --- !u!135 &944214494
@@ -13203,7 +13203,7 @@ MonoBehaviour:
   - {fileID: 300932767}
   - {fileID: 436164016}
   - {fileID: 114593654}
-  cost: 0
+  cost: 1
   x: 3
   y: 1
 --- !u!135 &956211123
@@ -13702,7 +13702,7 @@ MonoBehaviour:
   - {fileID: 427689363}
   - {fileID: 912799952}
   - {fileID: 890097336}
-  cost: 0
+  cost: 1
   x: 0
   y: 5
 --- !u!135 &981395790
@@ -13828,7 +13828,7 @@ MonoBehaviour:
   - {fileID: 1044268601}
   - {fileID: 300932767}
   - {fileID: 1743238347}
-  cost: 100
+  cost: 1000
   x: 4
   y: 2
 --- !u!135 &989063508
@@ -14078,7 +14078,7 @@ MonoBehaviour:
   - {fileID: 862149376}
   - {fileID: 852726445}
   - {fileID: 11408548}
-  cost: 0
+  cost: 1
   x: 1
   y: 7
 --- !u!135 &1034708793
@@ -14329,7 +14329,7 @@ MonoBehaviour:
   - {fileID: 1064456692}
   - {fileID: 2128668060}
   - {fileID: 97213610}
-  cost: 100
+  cost: 1000
   x: 5
   y: 2
 --- !u!135 &1044268602
@@ -14455,7 +14455,7 @@ MonoBehaviour:
   - {fileID: 192043774}
   - {fileID: 846324090}
   - {fileID: 1416410448}
-  cost: 0
+  cost: 1
   x: 3
   y: 7
 --- !u!135 &1049795216
@@ -14581,7 +14581,7 @@ MonoBehaviour:
   - {fileID: 1192194708}
   - {fileID: 758712655}
   - {fileID: 1537739676}
-  cost: 100
+  cost: 1000
   x: 6
   y: 2
 --- !u!135 &1064456693
@@ -15149,7 +15149,7 @@ MonoBehaviour:
   - {fileID: 2044961745}
   - {fileID: 192043774}
   - {fileID: 116712740}
-  cost: 0
+  cost: 1
   x: 4
   y: 8
 --- !u!135 &1107875847
@@ -15274,7 +15274,7 @@ MonoBehaviour:
   - {fileID: 1741104988}
   - {fileID: 1260997034}
   - {fileID: 1521763904}
-  cost: 100
+  cost: 1000
   x: 0
   y: 2
 --- !u!135 &1113324426
@@ -15523,7 +15523,7 @@ MonoBehaviour:
   - {fileID: 1743238347}
   - {fileID: 114593654}
   - {fileID: 129839486}
-  cost: 0
+  cost: 1000
   x: 3
   y: 3
 --- !u!135 &1144122782
@@ -15898,7 +15898,7 @@ MonoBehaviour:
   - {fileID: 154553550}
   - {fileID: 523590666}
   - {fileID: 220772863}
-  cost: 0
+  cost: 1
   x: 7
   y: 8
 --- !u!135 &1162503950
@@ -16646,7 +16646,7 @@ MonoBehaviour:
   - {fileID: 154553550}
   - {fileID: 898971486}
   - {fileID: 1905217617}
-  cost: 0
+  cost: 1
   x: 9
   y: 8
 --- !u!135 &1179573343
@@ -16772,7 +16772,7 @@ MonoBehaviour:
   - {fileID: 944214493}
   - {fileID: 816001898}
   - {fileID: 745660571}
-  cost: 100
+  cost: 1000
   x: 7
   y: 2
 --- !u!135 &1192194709
@@ -17271,7 +17271,7 @@ MonoBehaviour:
   - {fileID: 1162503949}
   - {fileID: 169933721}
   - {fileID: 732778489}
-  cost: 0
+  cost: 1
   x: 6
   y: 8
 --- !u!135 &1233072792
@@ -17395,7 +17395,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 786689984}
   - {fileID: 1260997034}
-  cost: 0
+  cost: 1
   x: 0
   y: 0
 --- !u!135 &1237931188
@@ -17520,7 +17520,7 @@ MonoBehaviour:
   - {fileID: 610105491}
   - {fileID: 1237931187}
   - {fileID: 1113324425}
-  cost: 0
+  cost: 1
   x: 0
   y: 1
 --- !u!135 &1260997035
@@ -17646,7 +17646,7 @@ MonoBehaviour:
   - {fileID: 390878415}
   - {fileID: 817387869}
   - {fileID: 919515555}
-  cost: 0
+  cost: 5
   x: 5
   y: 5
 --- !u!135 &1266740700
@@ -18022,7 +18022,7 @@ MonoBehaviour:
   - {fileID: 1644690317}
   - {fileID: 1476832718}
   - {fileID: 2032834238}
-  cost: 100
+  cost: 5
   x: 7
   y: 5
 --- !u!135 &1290752916
@@ -18520,7 +18520,7 @@ MonoBehaviour:
   - {fileID: 264773623}
   - {fileID: 116712740}
   - {fileID: 1416410448}
-  cost: 0
+  cost: 1
   x: 3
   y: 9
 --- !u!135 &1314605900
@@ -18645,7 +18645,7 @@ MonoBehaviour:
   - {fileID: 786689984}
   - {fileID: 436164016}
   - {fileID: 1567134362}
-  cost: 0
+  cost: 1
   x: 2
   y: 0
 --- !u!135 &1315117692
@@ -18770,7 +18770,7 @@ MonoBehaviour:
   - {fileID: 1698739222}
   - {fileID: 1372950784}
   - {fileID: 758712655}
-  cost: 0
+  cost: 1
   x: 6
   y: 0
 --- !u!135 &1353772911
@@ -19145,7 +19145,7 @@ MonoBehaviour:
   - {fileID: 1353772910}
   - {fileID: 511959638}
   - {fileID: 816001898}
-  cost: 0
+  cost: 1
   x: 7
   y: 0
 --- !u!135 &1372950785
@@ -19393,7 +19393,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 1940386558}
   - {fileID: 81931332}
-  cost: 0
+  cost: 1
   x: 0
   y: 9
 --- !u!135 &1390140505
@@ -19643,7 +19643,7 @@ MonoBehaviour:
   - {fileID: 1107875846}
   - {fileID: 1049795215}
   - {fileID: 1314605899}
-  cost: 0
+  cost: 1
   x: 3
   y: 8
 --- !u!135 &1416410449
@@ -19769,7 +19769,7 @@ MonoBehaviour:
   - {fileID: 549652029}
   - {fileID: 1794629082}
   - {fileID: 1901293190}
-  cost: 0
+  cost: 5
   x: 2
   y: 5
 --- !u!135 &1440537808
@@ -19895,7 +19895,7 @@ MonoBehaviour:
   - {fileID: 834501886}
   - {fileID: 745660571}
   - {fileID: 1290752915}
-  cost: 0
+  cost: 1
   x: 7
   y: 4
 --- !u!135 &1476832719
@@ -20020,7 +20020,7 @@ MonoBehaviour:
   - {fileID: 217962093}
   - {fileID: 287448569}
   - {fileID: 37022426}
-  cost: 0
+  cost: 1
   x: 9
   y: 3
 --- !u!135 &1479594408
@@ -20270,7 +20270,7 @@ MonoBehaviour:
   - {fileID: 3142421}
   - {fileID: 1113324425}
   - {fileID: 912799952}
-  cost: 0
+  cost: 1000
   x: 0
   y: 3
 --- !u!135 &1521763905
@@ -20396,7 +20396,7 @@ MonoBehaviour:
   - {fileID: 745660571}
   - {fileID: 1064456692}
   - {fileID: 360651529}
-  cost: 0
+  cost: 1000
   x: 6
   y: 3
 --- !u!135 &1537739677
@@ -20646,7 +20646,7 @@ MonoBehaviour:
   - {fileID: 956211122}
   - {fileID: 1315117691}
   - {fileID: 730119062}
-  cost: 0
+  cost: 1
   x: 2
   y: 1
 --- !u!135 &1567134363
@@ -20895,7 +20895,7 @@ MonoBehaviour:
   - {fileID: 2032834238}
   - {fileID: 390878415}
   - {fileID: 169933721}
-  cost: 0
+  cost: 5
   x: 6
   y: 6
 --- !u!135 &1579395148
@@ -21021,7 +21021,7 @@ MonoBehaviour:
   - {fileID: 1144122781}
   - {fileID: 730119062}
   - {fileID: 1794629082}
-  cost: 0
+  cost: 1000
   x: 2
   y: 3
 --- !u!135 &1608434260
@@ -21396,7 +21396,7 @@ MonoBehaviour:
   - {fileID: 1853893662}
   - {fileID: 132535403}
   - {fileID: 287448569}
-  cost: 0
+  cost: 1
   x: 9
   y: 1
 --- !u!135 &1616276371
@@ -21522,7 +21522,7 @@ MonoBehaviour:
   - {fileID: 139103047}
   - {fileID: 834501886}
   - {fileID: 669112490}
-  cost: 100
+  cost: 5
   x: 8
   y: 5
 --- !u!135 &1644690318
@@ -21773,7 +21773,7 @@ MonoBehaviour:
   - {fileID: 1416410448}
   - {fileID: 862149376}
   - {fileID: 264773623}
-  cost: 0
+  cost: 1
   x: 2
   y: 8
 --- !u!135 &1681376984
@@ -22242,7 +22242,7 @@ MonoBehaviour:
   - {fileID: 436164016}
   - {fileID: 1698739222}
   - {fileID: 300932767}
-  cost: 0
+  cost: 1
   x: 4
   y: 0
 --- !u!135 &1691378596
@@ -22367,7 +22367,7 @@ MonoBehaviour:
   - {fileID: 1691378595}
   - {fileID: 1353772910}
   - {fileID: 2128668060}
-  cost: 0
+  cost: 1
   x: 5
   y: 0
 --- !u!135 &1698739223
@@ -22867,7 +22867,7 @@ MonoBehaviour:
   - {fileID: 730119062}
   - {fileID: 610105491}
   - {fileID: 3142421}
-  cost: 100
+  cost: 1000
   x: 1
   y: 2
 --- !u!135 &1741104989
@@ -22993,7 +22993,7 @@ MonoBehaviour:
   - {fileID: 97213610}
   - {fileID: 989063507}
   - {fileID: 1790476579}
-  cost: 0
+  cost: 1000
   x: 4
   y: 3
 --- !u!135 &1743238348
@@ -23742,7 +23742,7 @@ MonoBehaviour:
   - {fileID: 817387869}
   - {fileID: 1743238347}
   - {fileID: 377922750}
-  cost: 0
+  cost: 1
   x: 4
   y: 4
 --- !u!135 &1790476580
@@ -23868,7 +23868,7 @@ MonoBehaviour:
   - {fileID: 129839486}
   - {fileID: 1608434259}
   - {fileID: 1440537807}
-  cost: 0
+  cost: 1
   x: 2
   y: 4
 --- !u!135 &1794629083
@@ -24244,7 +24244,7 @@ MonoBehaviour:
   - {fileID: 1616276370}
   - {fileID: 511959638}
   - {fileID: 944214493}
-  cost: 0
+  cost: 1
   x: 8
   y: 1
 --- !u!135 &1853893663
@@ -24370,7 +24370,7 @@ MonoBehaviour:
   - {fileID: 898971486}
   - {fileID: 669112490}
   - {fileID: 154553550}
-  cost: 0
+  cost: 1
   x: 8
   y: 7
 --- !u!135 &1867400785
@@ -24870,7 +24870,7 @@ MonoBehaviour:
   - {fileID: 846324090}
   - {fileID: 1440537807}
   - {fileID: 862149376}
-  cost: 0
+  cost: 5
   x: 2
   y: 6
 --- !u!135 &1901293191
@@ -24994,7 +24994,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 587247413}
   - {fileID: 1179573342}
-  cost: 0
+  cost: 1
   x: 9
   y: 9
 --- !u!135 &1905217618
@@ -25119,7 +25119,7 @@ MonoBehaviour:
   - {fileID: 1390140504}
   - {fileID: 264773623}
   - {fileID: 11408548}
-  cost: 0
+  cost: 1
   x: 1
   y: 9
 --- !u!135 &1940386559
@@ -25369,7 +25369,7 @@ MonoBehaviour:
   - {fileID: 669112490}
   - {fileID: 1290752915}
   - {fileID: 523590666}
-  cost: 0
+  cost: 5
   x: 7
   y: 6
 --- !u!135 &2032834239
@@ -25495,7 +25495,7 @@ MonoBehaviour:
   - {fileID: 1233072791}
   - {fileID: 378735199}
   - {fileID: 548116238}
-  cost: 0
+  cost: 1
   x: 5
   y: 8
 --- !u!135 &2044961746
@@ -25994,7 +25994,7 @@ MonoBehaviour:
   - {fileID: 758712655}
   - {fileID: 1698739222}
   - {fileID: 1044268601}
-  cost: 0
+  cost: 1
   x: 5
   y: 1
 --- !u!135 &2128668061
@@ -26411,7 +26411,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4779215249360406983, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6833841012952131487, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
       propertyPath: LoS
