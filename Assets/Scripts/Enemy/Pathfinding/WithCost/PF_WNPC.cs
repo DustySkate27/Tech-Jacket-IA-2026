@@ -32,5 +32,13 @@ public class PF_WNPC : MonoBehaviour
                 path[i].SetColor(Color.Lerp(Color.red, Color.yellow, (float)i / path.Count));
             }
         }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            path = AStar.AStarSearch(start, end);
+            for (int i = 0; i < path.Count; i++)
+            {
+                path[i].SetColor(Color.Lerp(Color.black, Color.red, (float)i / path.Count));
+            }
+        }
     }
 }

@@ -32,5 +32,14 @@ public class PF_NPC : MonoBehaviour
                 path[i].SetColor(Color.Lerp(Color.red, Color.yellow, (float)i / path.Count));
             }
         }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            path = GBFS.GreedyBFS(start, end);
+            for (int i = 0; i < path.Count; i++)
+            {
+                path[i].SetColor(Color.Lerp(Color.green, Color.yellow, (float)i / path.Count));
+            }
+        }
+        
     }
 }
