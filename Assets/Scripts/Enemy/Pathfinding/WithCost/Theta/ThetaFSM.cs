@@ -51,18 +51,18 @@ public class ThetaFSM : MonoBehaviour
         hurtbox.enabled = false;
         _sm = new StateMachine<ThetaEnemyStates>();
 
-        State<EnemyStates> idle = new EnemyIdleState(this, _sm);
-        State<EnemyStates> patrol = null;
-        State<EnemyStates> specificSee = null;
-        State<EnemyStates> pursuit = null;
-        State<EnemyStates> flee = null;
-        State<EnemyStates> arrive = null;
-        State<EnemyStates> attack = null;
+        State<ThetaEnemyStates> idle = new ThetaIdleState(this, _sm);
+        State<ThetaEnemyStates> patrol = null;
+        State<ThetaEnemyStates> specificSee = null;
+        State<ThetaEnemyStates> pursuit = null;
+        State<ThetaEnemyStates> flee = null;
+        State<ThetaEnemyStates> arrive = null;
+        State<ThetaEnemyStates> attack = null;
 
         if (isEscaper)
         {
-            patrol = new EnemyStackState(this, _sm);
-            specificSee = new EnemyEvadeState(this, _sm);
+            patrol = new ThetaStackState(this, _sm);
+            specificSee = new ThetaEvadeState(this, _sm);
             flee = new EnemyFleeState(this, _sm);
         }
         else

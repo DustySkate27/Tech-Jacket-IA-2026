@@ -23,6 +23,10 @@ public class PF_WNode : MonoBehaviour
         }
     }
 
+    public List<PF_WNode> NearNodes()
+    {
+        return los.RadialDetection(Neighbors);
+    }
     public void SetIndexes(int x, int y)
     {
         this.x = x;

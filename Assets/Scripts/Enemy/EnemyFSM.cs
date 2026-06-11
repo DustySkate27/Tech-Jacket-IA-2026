@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum EnemyStates  
 {
@@ -19,23 +20,30 @@ public class EnemyFSM : MonoBehaviour
     [SerializeField] public Rigidbody targetRB;
     [SerializeField] public BoxCollider hurtbox;
 
+    //BasicPatrol
     [SerializeField] public Transform[] wayPoints;
     public int currentWP = 0;
 
+    //ThetaPatrol
+    [SerializeField] public List<PF_WNode> nodeList;
+
     private StateMachine<EnemyStates> _sm;
 
+    //LineOfSight
     [SerializeField] private LineOfSight viewLoS;
     [SerializeField] public LineOfSight specificLoS;
 
-    
+    //TypeObject
     public bool isEscaper;
 
+    //SteeringVariables
     public float speed;
     public float maxForce = 5f;
     public float rotationSpeed = 5f;
     public float predictionFactor = 0.05f;
     public float slowingRadius = 15f;
 
+    //ObstacleAvoidance
     private Collider[] colliders;
     public float personalArea;
     public float avoidanceRadius;

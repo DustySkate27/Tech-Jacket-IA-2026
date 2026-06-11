@@ -316,7 +316,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 999460635}
   - {fileID: 1640811515}
-  cost: 0
+  cost: 1
   x: 0
   y: 0
 --- !u!114 &275628512
@@ -541,9 +541,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   neighbors:
-  - {fileID: 0}
-  - {fileID: 0}
-  cost: 0
+  - {fileID: 1562091220}
+  - {fileID: 1294301527}
+  cost: 7
   x: 0
   y: 0
 --- !u!114 &525437683
@@ -778,7 +778,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 64.1
+      value: 95.4
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalPosition.y
@@ -786,7 +786,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -24.2
+      value: -18.9
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalRotation.w
@@ -871,9 +871,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   neighbors:
-  - {fileID: 0}
-  - {fileID: 0}
-  cost: 0
+  - {fileID: 1562091220}
+  - {fileID: 275628511}
+  cost: 9
   x: 0
   y: 0
 --- !u!114 &999460636
@@ -1189,7 +1189,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 1294301527}
   - {fileID: 275628511}
-  cost: 0
+  cost: 7
   x: 0
   y: 0
 --- !u!114 &1503687817
@@ -1224,7 +1224,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 63.1
+      value: 54.6
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1232,7 +1232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -73.7
+      value: -26.1
       objectReference: {fileID: 0}
     - target: {fileID: 6376336551886733612, guid: 19b81a124b2763646ad398ff3186e873, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1312,8 +1312,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c83fa5bffcebfa4a92c23a6b874d7d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  neighbors: []
-  cost: 0
+  neighbors:
+  - {fileID: 525437682}
+  - {fileID: 999460635}
+  cost: 1
   x: 0
   y: 0
 --- !u!114 &1562091221
@@ -1432,8 +1434,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c83fa5bffcebfa4a92c23a6b874d7d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  neighbors: []
-  cost: 0
+  neighbors:
+  - {fileID: 999460635}
+  cost: 2
   x: 0
   y: 0
 --- !u!114 &1640811516
@@ -1622,7 +1625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4779215249360406983, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
       propertyPath: m_Name
-      value: BfsNPC
+      value: ThetaNPC
       objectReference: {fileID: 0}
     - target: {fileID: 4779215249360406983, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
       propertyPath: m_IsActive
@@ -1640,8 +1643,54 @@ PrefabInstance:
     - {fileID: 3543545086861213642, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
     - {fileID: 8519800342040719717, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4779215249360406983, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7988506743867132912}
   m_SourcePrefab: {fileID: 100100000, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+--- !u!1 &7988506743867132911 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4779215249360406983, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+  m_PrefabInstance: {fileID: 7988506743867132910}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7988506743867132912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7988506743867132911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ce70d9963c20e4289c2228b9b42986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  targetRB: {fileID: 0}
+  hurtbox: {fileID: 0}
+  wayPoints:
+  - {fileID: 1294301526}
+  - {fileID: 1503687815}
+  - {fileID: 275628510}
+  - {fileID: 999460634}
+  - {fileID: 525437681}
+  - {fileID: 1640811514}
+  - {fileID: 1562091219}
+  currentWP: 0
+  viewLoS: {fileID: 0}
+  specificLoS: {fileID: 0}
+  isEscaper: 0
+  speed: 0
+  maxForce: 5
+  rotationSpeed: 5
+  predictionFactor: 0.05
+  slowingRadius: 15
+  personalArea: 0
+  avoidanceRadius: 0
+  colliderCapacity: 0
+  obsMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

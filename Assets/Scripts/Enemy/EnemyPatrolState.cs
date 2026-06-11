@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 
 public class EnemyPatrolState : State<EnemyStates>
 {
     private EnemyFSM fsm;
     private int currentWP;
-
     private Vector3 currentSpeed;
+
+    private List<PF_WNode> path = null;
 
     public EnemyPatrolState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
@@ -19,22 +21,41 @@ public class EnemyPatrolState : State<EnemyStates>
     {
         base.Execute();
 
-        Patrol();
+        //Patrol();
+        ThetaPatrol();
     }
 
     private void Patrol()
-    {
-        Transform targetWP = fsm.wayPoints[currentWP];
+    { 
 
-        if (Vector3.Distance(fsm.transform.position,targetWP.position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
+        if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
         {
             MoveTowards(fsm.wayPoints[currentWP].position); //Se acercan al waypoint asignado
         }
         else
         {
-            ChooseNextWaypoint(); //Si no, van al próximo.
+            currentWP = ChooseNextWaypoint(); //Si no, van al próximo.
         }
         
+        SawTheTarget(); //Si ven al player cambia su estado
+    }
+
+    private void ThetaPatrol()
+    {
+
+        if (Vector3.Distance(fsm.transform.position, path[currentWP].transform.position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
+        {
+            MoveTowards(path[currentWP].transform.position); //Se acercan al waypoint asignado
+        }
+        else
+        {
+            PF_WNode newStart = ChooseNextNode();
+            PF_WNode newTarget = ChooseNextNode();
+            path = Theta.ThetaStar(newStart, node => node == newTarget, node => node.Neighbors, 
+                (a, b) => Vector3.Distance(a.transform.position, b.transform.position), 
+                node => Vector3.Distance(node.transform.position, newTarget.transform.position), (a,b) => a.NearNodes().Contains(b)); //Si no, van al próximo.
+        }
+
         SawTheTarget(); //Si ven al player cambia su estado
     }
 
@@ -70,16 +91,22 @@ public class EnemyPatrolState : State<EnemyStates>
         }
     }
 
-
-    private void ChooseNextWaypoint()
+    private int ChooseNextWaypoint()
     {
         var weights = SetWeights(currentWP,fsm.wayPoints);
 
         Transform next = MyRandom.RouletteWheelSelection(weights);
 
-        currentWP = Array.IndexOf(fsm.wayPoints,next);
-            
+        return Array.IndexOf(fsm.wayPoints,next);
     }
+
+    private PF_WNode ChooseNextNode()
+    {
+        //ACA HAY QUE METER EL DYNAMIC RANDOM PIPA
+
+        return fsm.nodeList[UnityEngine.Random.Range(0,fsm.nodeList.Count)];
+    }
+
 
 
     private Dictionary<Transform, float> SetWeights(int currentIndex, Transform[] waypoints)
@@ -113,7 +140,6 @@ public class EnemyPatrolState : State<EnemyStates>
 
         return weights;
     }
-
 
     private void SawTheTarget()
     {
