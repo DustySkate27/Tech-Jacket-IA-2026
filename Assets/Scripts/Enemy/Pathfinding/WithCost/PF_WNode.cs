@@ -23,10 +23,13 @@ public class PF_WNode : MonoBehaviour
         }
     }
 
-    public List<PF_WNode> NearNodes()
+    public bool CanSee(PF_WNode target)
     {
-        return los.RadialDetection(Neighbors);
+        Debug.Log(los);
+        if (los == null) return false;
+        return los.CheckRange(target.transform) && los.CheckView(target.transform);
     }
+
     public void SetIndexes(int x, int y)
     {
         this.x = x;

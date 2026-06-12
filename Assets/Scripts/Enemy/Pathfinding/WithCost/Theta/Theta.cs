@@ -20,7 +20,6 @@ public class Theta
             watchdog--;
             if (watchdog <= 0) break;
             T current = pending.Dequeue();
-            Debug.Log("TheteStar");
             if (isSatisfies(current))
             {
                 //Path

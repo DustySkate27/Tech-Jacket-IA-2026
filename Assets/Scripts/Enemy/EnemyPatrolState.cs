@@ -7,6 +7,7 @@ public class EnemyPatrolState : State<EnemyStates>
 {
     private EnemyFSM fsm;
     private int currentWP;
+    private PF_WNode lastNode;
     private Vector3 currentSpeed;
 
     private List<PF_WNode> path = null;
@@ -42,19 +43,44 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private void ThetaPatrol()
     {
-
-        if (Vector3.Distance(fsm.transform.position, path[currentWP].transform.position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
+        if (path != null)
         {
-            MoveTowards(path[currentWP].transform.position); //Se acercan al waypoint asignado
+            if (currentWP >= path.Count)
+            {
+                lastNode = path[path.Count - 1];
+                path = null;
+            }
+            else if (currentWP < path.Count && Vector3.Distance(fsm.transform.position, path[currentWP].transform.position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
+            {
+                MoveTowards(path[currentWP].transform.position); //Se acercan al waypoint asignado
+            }
+            else
+            {
+                currentWP++;
+            }
         }
         else
         {
-            PF_WNode newStart = ChooseNextNode();
+            currentWP = 0;
+
+            PF_WNode newStart = lastNode ?? ChooseNextNode();
             PF_WNode newTarget = ChooseNextNode();
-            path = Theta.ThetaStar(newStart, node => node == newTarget, node => node.Neighbors, 
-                (a, b) => Vector3.Distance(a.transform.position, b.transform.position), 
-                node => Vector3.Distance(node.transform.position, newTarget.transform.position), (a,b) => a.NearNodes().Contains(b)); //Si no, van al próximo.
+            do { newTarget = ChooseNextNode(); } while (newTarget == newStart);
+
+            path = Theta.ThetaStar(newStart, node => node == newTarget, node => node.Neighbors,
+                (a, b) => Vector3.Distance(a.transform.position, b.transform.position),
+                node => Vector3.Distance(node.transform.position, newTarget.transform.position), (a, b) => a.CanSee(b));
+
+            if (path.Count == 0)
+            {
+                path = null;
+                lastNode = null;
+            }
+
+            Debug.Log(newStart.name);
+            Debug.Log(newTarget.name);
         }
+        
 
         SawTheTarget(); //Si ven al player cambia su estado
     }
