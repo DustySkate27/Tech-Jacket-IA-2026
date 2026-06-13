@@ -42,6 +42,14 @@ public class EnemyFSM : MonoBehaviour
     public int colliderCapacity;
     public LayerMask obsMask;
 
+    [Header("Flocking - Separation")]
+    public float separationRadius = 3f;
+    public float separationForce = 1.5f;
+    public LayerMask enemyMask; // Layer de los otros enemigos
+
+    private Collider[] neighborColliders = new Collider[20];
+
+
     public LineOfSight ViewLoS => viewLoS;
     public LineOfSight SpecificLoS => specificLoS;
 
@@ -102,8 +110,15 @@ public class EnemyFSM : MonoBehaviour
             attack.AddTransition(idle, EnemyStates.Idle);
         }
         
-
-        _sm.SetCurrent(idle);
+        if (isEscaper)
+        {
+            _sm.SetCurrent(idle);
+        }
+        else
+        {
+            _sm.SetCurrent(pursuit);
+        }
+            
     }
 
     private void Update()
@@ -145,6 +160,32 @@ public class EnemyFSM : MonoBehaviour
         //Calcula la "Fuerza de la evasión" por medio de la diferencia entre el radio de evasión y un clampeo de la diferencia entre "más cercana" y "distancia mínima obligatoria" sobre radio de evasión
         float weight = (avoidanceRadius - Mathf.Clamp(nearestDistance - personalArea, 0, avoidanceRadius)) / avoidanceRadius; 
         return avoidDir * weight; //Multiplica la dirección de evasión por la fuerza para respetar la distancia mínima obligatoria.
+    }
+
+    public Vector3? ComputeSeparation()
+    {
+        // Test sin layermask para descartar el problema de layer definitivamente
+        int countSinMask = Physics.OverlapSphereNonAlloc(
+            transform.position,
+            separationRadius,
+            neighborColliders
+        );
+
+        int countConMask = Physics.OverlapSphereNonAlloc(
+            transform.position,
+            separationRadius,
+            neighborColliders,
+            enemyMask
+        );
+
+        Debug.Log($"[Sep] SIN mask={countSinMask} | CON mask={countConMask} | radius={separationRadius} | pos={transform.position}");
+
+        for (int i = 0; i < countSinMask; i++)
+        {
+            Debug.Log($"[Sep] colider encontrado: {neighborColliders[i].name} | GO layer: {neighborColliders[i].gameObject.layer} | LayerName: {LayerMask.LayerToName(neighborColliders[i].gameObject.layer)}");
+        }
+
+        return null; // temporalmente no aplica fuerza, solo diagnostica
     }
 
     private void OnDestroy()
