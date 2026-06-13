@@ -8,6 +8,8 @@ public class PF_WNode : MonoBehaviour
     [SerializeField] private int x, y;
     private Renderer rend;
     public List<PF_WNode> Neighbors => neighbors;
+    private LineOfSight los;
+    private List<PF_WNode> onRange;
 
     public int X => x;
     public int Y => y;
@@ -15,6 +17,17 @@ public class PF_WNode : MonoBehaviour
     private void Awake()
     {
         rend = GetComponent<Renderer>();
+        if(TryGetComponent(out LineOfSight los))
+        {
+            this.los = los;
+        }
+    }
+
+    public bool CanSee(PF_WNode target)
+    {
+        Debug.Log(los);
+        if (los == null) return false;
+        return los.CheckRange(target.transform) && los.CheckView(target.transform);
     }
 
     public void SetIndexes(int x, int y)
