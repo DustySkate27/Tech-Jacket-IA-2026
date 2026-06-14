@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEngine.GraphicsBuffer;
 
-public class EnemyGroupSeekState : State<EnemyStates>
+public class EnemyGroupArriveState : State<EnemyStates>
 {
     private EnemyGroupFSM enemyGroupFSM;
 
-    public EnemyGroupSeekState(EnemyGroupFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
+    public float arriveRadius = 50f;  
+    public float stopRadius = 2f;
+
+    public EnemyGroupArriveState(EnemyGroupFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         enemyGroupFSM = fsm;
     }
@@ -18,29 +19,41 @@ public class EnemyGroupSeekState : State<EnemyStates>
         base.Execute();
         Flocking();
         MoveWithAvoidance();
-
-        TargetDistanceCheck();
     }
 
-    protected Vector3 Seek(Vector3 target)
+    private Vector3 Arrive(Vector3 targetPos)
     {
-        Vector3 desired = (target - enemyGroupFSM.transform.position);
-        desired.y = 0;                          
-        desired.Normalize();
+        Vector3 toTarget = targetPos - enemyGroupFSM.myPosition;
+        toTarget.y = 0;
+        float distance = toTarget.magnitude;
+
+        // Dentro del stopRadius, frenamos completamente
+        if (distance < stopRadius)
+        {
+            enemyGroupFSM._velocity = Vector3.zero;
+            return Vector3.zero;
+        }
+
+        // Entre stopRadius y arriveRadius, reducimos la velocidad proporcionalmente
+        float speed = enemyGroupFSM._maxSpeed;
+        if (distance < arriveRadius)
+            speed = enemyGroupFSM._maxSpeed * (distance / arriveRadius);
+
+        Vector3 desired = toTarget.normalized * speed;
         return enemyGroupFSM.CalculateSteering(desired);
     }
 
     private void Flocking()
     {
-        Vector3 seekForce = (enemyGroupFSM.target != null)
-            ? Seek(enemyGroupFSM.target.position) * enemyGroupFSM.targetWeight
+        Vector3 arriveForce = (enemyGroupFSM.target != null)
+            ? Arrive(enemyGroupFSM.target.position) * enemyGroupFSM.targetWeight
             : Vector3.zero;
 
         enemyGroupFSM.AddForce(
             Separation() * enemyGroupFSM.separationWeight
             + Cohesion() * enemyGroupFSM.cohesionWeight
             + Alignment() * enemyGroupFSM.alignmentWeight
-            + seekForce
+            + arriveForce
         );
     }
 
@@ -49,6 +62,7 @@ public class EnemyGroupSeekState : State<EnemyStates>
         var boidsInRange = Physics.OverlapSphere(enemyGroupFSM.myPosition, enemyGroupFSM.separationRadius, enemyGroupFSM.boidMask);
         Vector3 totalForce = Vector3.zero;
         int cont = 0;
+
         for (int i = 0; i < boidsInRange.Length; i++)
         {
             var currentBoid = boidsInRange[i];
@@ -63,7 +77,6 @@ public class EnemyGroupSeekState : State<EnemyStates>
         if (cont == 0) return Vector3.zero;
 
         totalForce /= cont;
-
         return enemyGroupFSM.CalculateSteering(totalForce * enemyGroupFSM._maxSpeed);
     }
 
@@ -84,7 +97,11 @@ public class EnemyGroupSeekState : State<EnemyStates>
         if (cont == 0) return Vector3.zero;
 
         avgPosition /= cont;
-        return Seek(avgPosition);
+
+        Vector3 toAvg = avgPosition - enemyGroupFSM.myPosition;
+        toAvg.y = 0;
+        toAvg.Normalize();
+        return enemyGroupFSM.CalculateSteering(toAvg);
     }
 
     private Vector3 Alignment()
@@ -92,11 +109,11 @@ public class EnemyGroupSeekState : State<EnemyStates>
         var boidsInRange = Physics.OverlapSphere(enemyGroupFSM.myPosition, enemyGroupFSM.cohesionRadius, enemyGroupFSM.boidMask);
         Vector3 avgVelocity = Vector3.zero;
         int cont = 0;
+
         for (int i = 0; i < boidsInRange.Length; i++)
         {
             var currentBoid = boidsInRange[i].GetComponent<EnemyGroupFSM>();
             if (currentBoid == enemyGroupFSM) continue;
-
 
             avgVelocity += currentBoid.transform.forward;
             cont++;
@@ -132,15 +149,5 @@ public class EnemyGroupSeekState : State<EnemyStates>
 
         enemyGroupFSM.transform.position += moveVelocity * Time.deltaTime;
         enemyGroupFSM._velocity.y = 0;
-    }
-
-    private void TargetDistanceCheck()
-    {
-        /*
-        if (Vector3.Distance(fsm.transform.position, fsm.target.position) < fsm.specificLoS.range)
-        {
-            _sm.ChangeState(EnemyStates.Arrive);
-        }
-        */
     }
 }

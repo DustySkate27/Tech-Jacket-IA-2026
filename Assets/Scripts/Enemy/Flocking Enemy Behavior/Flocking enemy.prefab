@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2429579664685582045}
   - component: {fileID: 7397178947280714752}
   - component: {fileID: 1859534134725408699}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Flocking enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,3 +141,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   maxObstacles: 10
+  myTransform: {fileID: 0}
+  myCollider: {fileID: 0}
+  viewLoS: {fileID: 0}
+  specificLoS: {fileID: 0}

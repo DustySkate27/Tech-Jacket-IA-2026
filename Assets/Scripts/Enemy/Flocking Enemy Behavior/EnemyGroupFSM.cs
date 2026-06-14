@@ -45,7 +45,6 @@ public class EnemyGroupFSM : MonoBehaviour
     private void Awake()
     {
         myTransform = transform;
-        //myCollider = GetComponent<Collider>();
 
         _obstacleAvoidance = new ObstacleAvoidance(
             myTransform,
@@ -64,8 +63,10 @@ public class EnemyGroupFSM : MonoBehaviour
         _sm = new StateMachine<EnemyStates>();
 
         State<EnemyStates> seek = new EnemyGroupSeekState(this, _sm);
+        State<EnemyStates> arrive = new EnemyGroupArriveState(this, _sm);
+        State<EnemyStates> pursuit = new EnemyGroupPursuitState(this, _sm);
 
-        _sm.SetCurrent(seek);
+        _sm.SetCurrent(pursuit);
     }
 
     void Update()
