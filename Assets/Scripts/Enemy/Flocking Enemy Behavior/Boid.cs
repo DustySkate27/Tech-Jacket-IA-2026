@@ -13,7 +13,7 @@ public class Boid : SteeringEntity
     [SerializeField] private LayerMask boidMask;
 
     [Header("Target")]
-    [SerializeField] private Transform target;
+    [SerializeField] private Rigidbody target;
     [SerializeField, Range(0.0f, 3.0f)] private float targetWeight = 1f;
 
     [Header("Obstacle Avoidance")]
