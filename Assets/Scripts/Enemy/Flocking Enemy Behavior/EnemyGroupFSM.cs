@@ -23,6 +23,9 @@ public class EnemyGroupFSM : MonoBehaviour
     [SerializeField] public Rigidbody target;
     [SerializeField, Range(0.0f, 3.0f)] public float targetWeight = 2f;
 
+    [Header("WayPoints")]
+    [SerializeField] public Transform[] wayPoints;
+
     [Header("Obstacle Avoidance")]
     [SerializeField] public float obstacleRadius = 15f;
     [SerializeField] public float obstacleAngle = 180f;
@@ -36,9 +39,7 @@ public class EnemyGroupFSM : MonoBehaviour
     public Vector3 myPosition => myTransform.position;
 
     [SerializeField] private LineOfSight viewLoS;
-    [SerializeField] private LineOfSight specificLoS;
     public LineOfSight ViewLoS => viewLoS;
-    public LineOfSight SpecificLoS => specificLoS;
 
     private StateMachine<EnemyStates> _sm;
 
@@ -65,8 +66,13 @@ public class EnemyGroupFSM : MonoBehaviour
         State<EnemyStates> seek = new EnemyGroupSeekState(this, _sm);
         State<EnemyStates> arrive = new EnemyGroupArriveState(this, _sm);
         State<EnemyStates> pursuit = new EnemyGroupPursuitState(this, _sm);
+        State<EnemyStates> patrol = new EnemyGroupPatrolState(this, _sm);
 
-        _sm.SetCurrent(pursuit);
+        patrol.AddTransition(pursuit, EnemyStates.Pursuit);
+        pursuit.AddTransition(arrive, EnemyStates.Arrive);
+        arrive.AddTransition(pursuit, EnemyStates.Pursuit);
+
+        _sm.SetCurrent(patrol);
     }
 
     void Update()

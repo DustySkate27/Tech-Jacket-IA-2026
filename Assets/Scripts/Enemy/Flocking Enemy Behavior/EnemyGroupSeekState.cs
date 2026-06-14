@@ -22,7 +22,7 @@ public class EnemyGroupSeekState : State<EnemyStates>
         TargetDistanceCheck();
     }
 
-    protected Vector3 Seek(Vector3 target)
+    private Vector3 Seek(Vector3 target)
     {
         Vector3 desired = (target - enemyGroupFSM.transform.position);
         desired.y = 0;                          

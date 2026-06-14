@@ -43,14 +43,10 @@ public class EnemyPursuitState : State<EnemyStates>
         var desired = dir.normalized * fsm.speed;
 
         var avoidForce = fsm.ComputeAvoidance();
-        var separationForce = fsm.ComputeSeparation();
 
         // Suma sobre el desired, pursuit nunca se pierde
         if (avoidForce.HasValue)
             desired += avoidForce.Value * fsm.speed;
-
-        if (separationForce.HasValue)
-            desired += separationForce.Value * 0.5f; // peso reducido: persiguen en grupo
 
         Vector3 steer = desired - currentSpeed;
 

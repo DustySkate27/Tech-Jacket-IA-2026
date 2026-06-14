@@ -1,58 +1,86 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyGroupPursuitState : State<EnemyStates>
+public class EnemyGroupPatrolState : State<EnemyStates>
 {
     private EnemyGroupFSM enemyGroupFSM;
+    private Transform[] wayPoints;
+    private int currentWayPoint = 0;
 
-    public EnemyGroupPursuitState(EnemyGroupFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
+    public EnemyGroupPatrolState(EnemyGroupFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         enemyGroupFSM = fsm;
+        wayPoints = fsm.wayPoints;
+
+        EventBus.Subscribe<ChangeWayPoint>(ChangeTargetWayPoint);
+        EventBus.Subscribe<EnterPursuitState>(ChangePursuitState);
+    }
+
+    public override void Awake()
+    {
+        base.Awake();
+
+        EventBus.Subscribe<ChangeWayPoint>(ChangeTargetWayPoint);
+        EventBus.Subscribe<EnterPursuitState>(ChangePursuitState);
     }
 
     public override void Execute()
     {
         base.Execute();
+
+        CheckWayPoint();
         Flocking();
         MoveWithAvoidance();
-
         TargetDistanceCheck();
     }
 
-    private Vector3 Pursuit()
+    public override void Sleep()
     {
-        if (enemyGroupFSM.target == null) return Vector3.zero;
+        base.Sleep();
 
-        Vector3 targetPos = enemyGroupFSM.target.position;
-        Vector3 targetVelocity = enemyGroupFSM.target.velocity;
-        targetVelocity.y = 0;
+        EventBus.Unsubscribe<ChangeWayPoint>(ChangeTargetWayPoint);
+        EventBus.Unsubscribe<EnterPursuitState>(ChangePursuitState);
+    }
 
-        float distance = Vector3.Distance(enemyGroupFSM.myPosition, targetPos);
+    private void CheckWayPoint()
+    {
+        if (wayPoints == null || wayPoints.Length == 0) return;
 
-        // Limita el lookAhead: cerca del target predice poco, lejos predice más
-        float maxLookAhead = 1.5f;  // ajustable en segundos
-        float lookAheadTime = Mathf.Min(distance / enemyGroupFSM._maxSpeed, maxLookAhead);
+        float dist = Vector3.Distance(enemyGroupFSM.myPosition, wayPoints[currentWayPoint].position);
 
-        Vector3 predictedPos = targetPos + targetVelocity * lookAheadTime;
-        predictedPos.y = enemyGroupFSM.myPosition.y;
+        if (dist < 10f)
+        {
+            EventBus.Publish(new ChangeWayPoint());
+        }
+    }
 
-        Debug.DrawLine(enemyGroupFSM.myPosition, predictedPos, Color.green);
+    public void ChangeTargetWayPoint(ChangeWayPoint wayPointEvent)
+    {
+        currentWayPoint = (currentWayPoint + 1) % wayPoints.Length;
+        Debug.Log(currentWayPoint + " " + enemyGroupFSM.name);
+    }
 
-        Vector3 desired = (predictedPos - enemyGroupFSM.myPosition);
+    private Vector3 Seek(Vector3 target)
+    {
+        Vector3 desired = (target - enemyGroupFSM.transform.position);
         desired.y = 0;
         desired.Normalize();
-
         return enemyGroupFSM.CalculateSteering(desired);
     }
 
     private void Flocking()
     {
-        Vector3 pursuitForce = Pursuit() * enemyGroupFSM.targetWeight;
+        if (wayPoints == null || wayPoints.Length == 0) return;
+
+        // BUG 1 fix: el weight multiplica la fuerza, no la posición
+        Vector3 seekForce = Seek(wayPoints[currentWayPoint].position) * enemyGroupFSM.targetWeight;
 
         enemyGroupFSM.AddForce(
             Separation() * enemyGroupFSM.separationWeight
             + Cohesion() * enemyGroupFSM.cohesionWeight
             + Alignment() * enemyGroupFSM.alignmentWeight
-            + pursuitForce
+            + seekForce
         );
     }
 
@@ -96,11 +124,7 @@ public class EnemyGroupPursuitState : State<EnemyStates>
         if (cont == 0) return Vector3.zero;
 
         avgPosition /= cont;
-
-        Vector3 toAvg = (avgPosition - enemyGroupFSM.myPosition);
-        toAvg.y = 0;
-        toAvg.Normalize();
-        return enemyGroupFSM.CalculateSteering(toAvg);
+        return Seek(avgPosition);
     }
 
     private Vector3 Alignment()
@@ -150,11 +174,21 @@ public class EnemyGroupPursuitState : State<EnemyStates>
         enemyGroupFSM._velocity.y = 0;
     }
 
+    private void ChangePursuitState(EnterPursuitState pursuitState)
+    {
+        _sm.ChangeState(EnemyStates.Pursuit);
+    }
+
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(enemyGroupFSM.transform.position, enemyGroupFSM.target.position) < enemyGroupFSM.ViewLoS.range)
+        if (enemyGroupFSM.ViewLoS.CheckView(enemyGroupFSM.target.transform) &&
+            enemyGroupFSM.ViewLoS.CheckRange(enemyGroupFSM.target.transform) &&
+            enemyGroupFSM.ViewLoS.CheckAngle(enemyGroupFSM.target.transform))
         {
-            _sm.ChangeState(EnemyStates.Arrive);
+            EventBus.Publish(new EnterPursuitState());
         }
     }
 }
+
+
+

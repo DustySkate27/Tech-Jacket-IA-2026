@@ -170,32 +170,6 @@ public class EnemyFSM : MonoBehaviour
         return avoidDir * weight; //Multiplica la dirección de evasión por la fuerza para respetar la distancia mínima obligatoria.
     }
 
-    public Vector3? ComputeSeparation()
-    {
-        // Test sin layermask para descartar el problema de layer definitivamente
-        int countSinMask = Physics.OverlapSphereNonAlloc(
-            transform.position,
-            separationRadius,
-            neighborColliders
-        );
-
-        int countConMask = Physics.OverlapSphereNonAlloc(
-            transform.position,
-            separationRadius,
-            neighborColliders,
-            enemyMask
-        );
-
-        Debug.Log($"[Sep] SIN mask={countSinMask} | CON mask={countConMask} | radius={separationRadius} | pos={transform.position}");
-
-        for (int i = 0; i < countSinMask; i++)
-        {
-            Debug.Log($"[Sep] colider encontrado: {neighborColliders[i].name} | GO layer: {neighborColliders[i].gameObject.layer} | LayerName: {LayerMask.LayerToName(neighborColliders[i].gameObject.layer)}");
-        }
-
-        return null; // temporalmente no aplica fuerza, solo diagnostica
-    }
-
     private void OnDestroy()
     {
         _sm = null;

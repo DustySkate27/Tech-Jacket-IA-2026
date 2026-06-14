@@ -19,6 +19,8 @@ public class EnemyGroupArriveState : State<EnemyStates>
         base.Execute();
         Flocking();
         MoveWithAvoidance();
+
+        TargetDistanceCheck();
     }
 
     private Vector3 Arrive(Vector3 targetPos)
@@ -149,5 +151,13 @@ public class EnemyGroupArriveState : State<EnemyStates>
 
         enemyGroupFSM.transform.position += moveVelocity * Time.deltaTime;
         enemyGroupFSM._velocity.y = 0;
+    }
+
+    private void TargetDistanceCheck()
+    {
+        if (Vector3.Distance(enemyGroupFSM.transform.position, enemyGroupFSM.target.position) > enemyGroupFSM.ViewLoS.range)
+        {
+            _sm.ChangeState(EnemyStates.Pursuit);
+        }
     }
 }
