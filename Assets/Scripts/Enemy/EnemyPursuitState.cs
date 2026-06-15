@@ -42,13 +42,18 @@ public class EnemyPursuitState : State<EnemyStates>
         var dir = futurePosition - fsm.transform.position;
         var desired = dir.normalized * fsm.speed;
 
-        var avoidForce = fsm.ComputeAvoidance();
+        var avoidForce = fsm.ComputeAvoidance(); //Ejecución de Obstacle Avoidance
 
-        // Suma sobre el desired, pursuit nunca se pierde
-        if (avoidForce.HasValue)
-            desired += avoidForce.Value * fsm.speed;
-
-        Vector3 steer = desired - currentSpeed;
+        Vector3 steer; //Inicializa el virado
+        if (avoidForce.HasValue) //Si existe un obstáculo, obtiene la dirección de evasión
+        {
+            var evadeDesired = avoidForce.Value.normalized * fsm.speed; //Inicializa la evasión objetivo multiplicando la fuerza de evasión normalizada por la velocidad.
+            steer = evadeDesired - currentSpeed; //El virado es equivalente a la diferencia entre la evasión objetivo y la dirección actual
+        }
+        else //Si no existe
+        {
+            steer = desired - currentSpeed; //El virado es equivalente a la dirección objetivo menos la actual.
+        }
 
         steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
         currentSpeed += steer * Time.deltaTime;
