@@ -67,6 +67,7 @@ public class EnemyGroupFSM : MonoBehaviour
         State<EnemyStates> arrive = new EnemyGroupArriveState(this, _sm);
         State<EnemyStates> pursuit = new EnemyGroupPursuitState(this, _sm);
         State<EnemyStates> patrol = new EnemyGroupPatrolState(this, _sm);
+        //State<EnemyStates> patrol = new NewEnemyPatrolState(this, _sm);
 
         patrol.AddTransition(pursuit, EnemyStates.Pursuit);
         pursuit.AddTransition(arrive, EnemyStates.Arrive);

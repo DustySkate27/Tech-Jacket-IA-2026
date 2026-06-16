@@ -1469,6 +1469,17 @@ MonoBehaviour:
   obsMask:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &667958755 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7179727426247691821, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+  m_PrefabInstance: {fileID: 978144786}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02def202228b1624880cc642ef2e659a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &713827986
 GameObject:
   m_ObjectHideFlags: 0
@@ -2006,6 +2017,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.1, z: 1.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &892415575 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 4266784517600535786, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+  m_PrefabInstance: {fileID: 978144786}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &907754165
 GameObject:
   m_ObjectHideFlags: 0
@@ -2392,10 +2408,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -1.62
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 717510547609310778, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4779215249360406983, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1872028448}
   m_SourcePrefab: {fileID: 100100000, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
 --- !u!114 &978144787 stripped
 MonoBehaviour:
@@ -4463,6 +4483,65 @@ Transform:
   - {fileID: 1111106570}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1872028447 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4779215249360406983, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+  m_PrefabInstance: {fileID: 978144786}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1872028448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872028447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ce70d9963c20e4289c2228b9b42986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 361573756}
+  target: {fileID: 361573752}
+  targetWeight: 2
+  hurtbox: {fileID: 892415575}
+  wayPoints:
+  - {fileID: 1294301526}
+  - {fileID: 1503687815}
+  - {fileID: 275628510}
+  - {fileID: 999460634}
+  - {fileID: 525437681}
+  - {fileID: 1640811514}
+  - {fileID: 1562091219}
+  currentWP: 0
+  nodeList:
+  - {fileID: 1294301527}
+  - {fileID: 1503687816}
+  - {fileID: 275628511}
+  - {fileID: 999460635}
+  - {fileID: 525437682}
+  - {fileID: 1640811515}
+  - {fileID: 1562091220}
+  viewLoS: {fileID: 978144787}
+  specificLoS: {fileID: 667958755}
+  isEscaper: 0
+  _maxSpeed: 20
+  _maxForce: 100
+  _velocity: {x: 0, y: 0, z: 0}
+  _rotationSpeed: 100
+  maxLookAhead: 1.5
+  obstacleRadius: 5
+  obstacleAngle: 180
+  obstaclePersonalArea: 3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 8
+  maxObstacles: 10
+  myTransform: {fileID: 1872028451}
+--- !u!4 &1872028451 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2258062281376987052, guid: bb8852af1fe2b6340a99c30a7deb1201, type: 3}
+  m_PrefabInstance: {fileID: 978144786}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1919093356
 GameObject:
   m_ObjectHideFlags: 0

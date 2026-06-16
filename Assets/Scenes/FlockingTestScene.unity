@@ -845,6 +845,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
+      propertyPath: _rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
       propertyPath: wayPoints.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -944,6 +948,10 @@ PrefabInstance:
     - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
       propertyPath: targetWeight
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
+      propertyPath: _rotationSpeed
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
       propertyPath: wayPoints.Array.size
@@ -1894,6 +1902,10 @@ PrefabInstance:
     - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
       propertyPath: targetWeight
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
+      propertyPath: _rotationSpeed
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1859534134725408699, guid: 4b941510506f5d24caa819bdff55664f, type: 3}
       propertyPath: wayPoints.Array.size

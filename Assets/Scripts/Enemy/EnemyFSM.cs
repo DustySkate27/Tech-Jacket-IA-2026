@@ -16,8 +16,11 @@ public enum EnemyStates
 
 public class EnemyFSM : MonoBehaviour
 {
-    [SerializeField] public Transform target;
-    [SerializeField] public Rigidbody targetRB;
+    [Header("Target")]
+    [SerializeField] public Transform targetTransform;
+    [SerializeField] public Rigidbody target;
+    [SerializeField, Range(0.0f, 3.0f)] public float targetWeight = 2f;
+
     [SerializeField] public BoxCollider hurtbox;
 
     //BasicPatrol
@@ -36,34 +39,47 @@ public class EnemyFSM : MonoBehaviour
     //TypeObject
     public bool isEscaper;
 
-    //SteeringVariables
-    public float speed;
-    public float maxForce = 5f;
-    public float rotationSpeed = 5f;
-    public float predictionFactor = 0.05f;
-    public float slowingRadius = 15f;
+    [SerializeField] public float _maxSpeed = 20f;
+    [SerializeField] public float _maxForce = 100f;
+    [SerializeField] public Vector3 _velocity;
+    public Vector3 Velocity { get { return _velocity; } }
+    [SerializeField] public float _rotationSpeed = 50f;
 
-    //ObstacleAvoidance
-    private Collider[] colliders;
-    public float personalArea;
-    public float avoidanceRadius;
-    public int colliderCapacity;
-    public LayerMask obsMask;
+    [Header("Pursuit / Evade")]
+    [SerializeField] public float maxLookAhead = 1.5f;
 
-    [Header("Flocking - Separation")]
-    public float separationRadius = 3f;
-    public float separationForce = 1.5f;
-    public LayerMask enemyMask; // Layer de los otros enemigos
+    [Header("Obstacle Avoidance")]
+    [SerializeField] public float obstacleRadius = 15f;
+    [SerializeField] public float obstacleAngle = 180f;
+    [SerializeField] public float obstaclePersonalArea = 10f;
+    [SerializeField] public LayerMask obstacleMask;
+    [SerializeField] public int maxObstacles = 10;
 
-    private Collider[] neighborColliders = new Collider[20];
-
+    public ObstacleAvoidance _obstacleAvoidance;
+    public Transform myTransform;
+    public Vector3 myPosition => myTransform.position;
 
     public LineOfSight ViewLoS => viewLoS;
     public LineOfSight SpecificLoS => specificLoS;
 
+    private void Awake()
+    {
+        myTransform = transform;
+
+        _obstacleAvoidance = new ObstacleAvoidance(
+            myTransform,
+            obstacleRadius,
+            obstacleAngle,
+            obstaclePersonalArea,
+            obstacleMask,
+            maxObstacles
+        );
+    }
+
     private void Start()
     {
-        colliders = new Collider[colliderCapacity];
+        AddForce(new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized * _maxSpeed);
+
         hurtbox.enabled = false;
         _sm = new StateMachine<EnemyStates>();
 
@@ -124,7 +140,7 @@ public class EnemyFSM : MonoBehaviour
         }
         else
         {
-            _sm.SetCurrent(pursuit);
+            _sm.SetCurrent(idle);
         }
             
     }
@@ -134,40 +150,17 @@ public class EnemyFSM : MonoBehaviour
         _sm.Update();
     }
 
-    public Vector3? ComputeAvoidance()
+    public Vector3 CalculateSteering(Vector3 desired)
     {
-        int count = Physics.OverlapSphereNonAlloc(transform.position, avoidanceRadius, colliders, obsMask); //Detección de colisiones
-
-        Collider nearestColl = null; //Inicializa en nulo la colision más cercana.
-        float nearestDistance = float.MaxValue; //Inicializa en "infinito" la distancia a esa colisión.
-        Vector3 nearestClosestPoint = Vector3.zero;//Inicializa en nulo la dirección a esa colisión.
-
-        for (int i = 0; i < count; i++) //Recorre count
-        {
-            Vector3 closestPoint = colliders[i].ClosestPoint(transform.position); //Inicializa una direccion al punto más cercano de un collider
-            closestPoint.y = transform.position.y; //Neutraliza la altura, para que no influya en el movimiento.
-
-            Vector3 dirToColl = closestPoint - transform.position; //Inicializa una dirección equivalente a la diferencia al closestPoint
-            float distance = dirToColl.magnitude; //Y almacena su magnitud, representando la distancia
-
-            if (distance < nearestDistance) //Si la magnitud es menor al "infinito" ó al nearestDistance "mas cercano" previo. 
-            {
-                nearestColl = colliders[i]; //Se asigna el collider al que se considera "más cercano" por ahora.
-                nearestDistance = distance; //Se almacena la distancia
-                nearestClosestPoint = closestPoint; //Se almacena la direccion al punto más cercano de un collider
-            }
-        }
-
-        if (nearestColl == null) return null; //Si no hay colliders, se devuelve null.
-
-        Vector3 relativePos = transform.InverseTransformPoint(nearestClosestPoint); //Si sí hay colliders, convierte la dirección al punto más cercano de World a Local Space
-        Vector3 dirToObstacle = (nearestClosestPoint - transform.position).normalized; //Inicializa la dirección normalizada al obstáculo
-        Vector3 avoidDir = relativePos.x < 0 ?  //Evalua por qué lado rodear en funcion de la dirección en Local Space
-            Vector3.Cross(transform.up, dirToObstacle) : -Vector3.Cross(transform.up, dirToObstacle);
-
-        //Calcula la "Fuerza de la evasión" por medio de la diferencia entre el radio de evasión y un clampeo de la diferencia entre "más cercana" y "distancia mínima obligatoria" sobre radio de evasión
-        float weight = (avoidanceRadius - Mathf.Clamp(nearestDistance - personalArea, 0, avoidanceRadius)) / avoidanceRadius; 
-        return avoidDir * weight; //Multiplica la dirección de evasión por la fuerza para respetar la distancia mínima obligatoria.
+        Vector3 steering = desired - _velocity;
+        steering.y = 0;
+        return Vector3.ClampMagnitude(steering, _maxForce);
+    }
+    public void AddForce(Vector3 force)
+    {
+        force.y = 0;
+        _velocity.y = 0;
+        _velocity = Vector3.ClampMagnitude(_velocity + force * Time.deltaTime, _maxSpeed);
     }
 
     private void OnDestroy()

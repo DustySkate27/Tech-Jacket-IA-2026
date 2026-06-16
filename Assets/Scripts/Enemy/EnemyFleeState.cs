@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyFleeState : State<EnemyStates>
 {
     private EnemyFSM fsm;
-    private Vector3 currentSpeed;
 
     public EnemyFleeState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
@@ -16,50 +15,64 @@ public class EnemyFleeState : State<EnemyStates>
     {
         base.Execute();
         Flee();
+        MoveWithAvoidance();
+
+        TargetDistanceCheck();
+    }
+
+    private Vector3 FleeForce(Vector3 target)
+    {
+        // Dirección invertida: se aleja del target en vez de acercarse
+        Vector3 desired = (fsm.transform.position - target);
+        desired.y = 0;
+        desired.Normalize();
+        desired *= fsm._maxSpeed * 1.5f;
+
+        Vector3 steering = desired - fsm._velocity;
+        steering.y = 0;
+        return Vector3.ClampMagnitude(steering, fsm._maxForce);
     }
 
     private void Flee()
     {
-        var toTarget = fsm.target.position - fsm.transform.position;
+        if (fsm.target == null) return;
 
-        var dir = -toTarget; //direccion opuesta al objetivo
-        
-        var desired = dir.normalized * fsm.speed;
+        Vector3 fleeForce = FleeForce(fsm.target.position) * fsm.targetWeight;
+        fsm.AddForce(fleeForce);
+    }
 
-        var avoidForce = fsm.ComputeAvoidance(); //Ejecución de Obstacle Avoidance
+    private void MoveWithAvoidance()
+    {
+        if (fsm._velocity == Vector3.zero) return;
 
-        Vector3 steer; //Inicializa el virado
-        if (avoidForce.HasValue) //Si existe un obstáculo, obtiene la dirección de evasión
+        Vector3 flatVelocity = fsm._velocity;
+        flatVelocity.y = 0;
+
+        Vector3 deflectedDir = fsm._obstacleAvoidance.GetDir(flatVelocity.normalized, calculateY: false);
+        deflectedDir.y = 0;
+        if (deflectedDir == Vector3.zero) deflectedDir = flatVelocity.normalized;
+        deflectedDir.Normalize();
+
+        Vector3 moveVelocity = deflectedDir * flatVelocity.magnitude;
+
+        if (deflectedDir != Vector3.zero)
         {
-            var evadeDesired = avoidForce.Value.normalized * fsm.speed; //Inicializa la evasión objetivo multiplicando la fuerza de evasión normalizada por la velocidad.
-            steer = evadeDesired - currentSpeed; //El virado es equivalente a la diferencia entre la evasión objetivo y la dirección actual
-        }
-        else //Si no existe
-        {
-            steer = desired - currentSpeed; //El virado es equivalente a la dirección objetivo menos la actual.
-        }
-
-        steer = Vector3.ClampMagnitude(steer, fsm.maxForce); //Camplea la magnitud de la dirección entre si mismo y la potencia máxima de virado.
-        currentSpeed += steer * Time.deltaTime; //le suma a la dirección actual el virado a lo largo del tiempo.
-        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed); //Clampea la magnitud de la dirección actual entre si misma y la velocidad.
-        currentSpeed.y = 0; //Neutraliza la altura de la dirección actual
-
-        fsm.transform.position += currentSpeed * Time.deltaTime; //Suma a la posición.
-
-        if (currentSpeed.sqrMagnitude > 0.001f) //Si la magnitud al cuadrado es menor al un número infimo
-        {
-            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized); //Inicializa rotacion objetivo
-            fsm.transform.rotation = Quaternion.Slerp(fsm.transform.rotation, targetRotation, fsm.rotationSpeed * Time.deltaTime); //La iguala a la rotacion del transform
+            Quaternion targetRotation = Quaternion.LookRotation(deflectedDir);
+            fsm.transform.rotation = Quaternion.RotateTowards(
+                fsm.transform.rotation,
+                targetRotation,
+                fsm._rotationSpeed * Time.deltaTime
+            );
         }
 
-        TargetDistanceCheck();
+        fsm.transform.position += moveVelocity * Time.deltaTime;
+        fsm._velocity.y = 0;
     }
 
     private void TargetDistanceCheck()
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 50f)
         {
-            fsm.speed = fsm.speed / 2;
             _sm.ChangeState(EnemyStates.Idle);
         }
     }

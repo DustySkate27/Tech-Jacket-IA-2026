@@ -34,7 +34,7 @@ public class EnemyIdleState : State<EnemyStates>
 
     private void SawTheTarget()
     {
-        if (fsm.ViewLoS.CheckView(fsm.target) && fsm.ViewLoS.CheckRange(fsm.target) && fsm.ViewLoS.CheckAngle(fsm.target))
+        if (fsm.ViewLoS.CheckView(fsm.targetTransform) && fsm.ViewLoS.CheckRange(fsm.targetTransform) && fsm.ViewLoS.CheckAngle(fsm.targetTransform))
         {
             _sm.ChangeState(EnemyStates.SpecificSee);
         }

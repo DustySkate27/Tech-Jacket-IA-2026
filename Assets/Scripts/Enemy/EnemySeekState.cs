@@ -19,7 +19,7 @@ public class EnemySeekState : State<EnemyStates>
 
     public void Seek()
     {
-        if (fsm.ViewLoS.CheckAngle(fsm.target) && fsm.ViewLoS.CheckRange(fsm.target) && fsm.ViewLoS.CheckView(fsm.target))
+        if (fsm.ViewLoS.CheckAngle(fsm.targetTransform) && fsm.ViewLoS.CheckRange(fsm.targetTransform) && fsm.ViewLoS.CheckView(fsm.targetTransform))
         {
             if(fsm.specificLoS.range < fsm.ViewLoS.range)
             {
@@ -39,9 +39,9 @@ public class EnemySeekState : State<EnemyStates>
 
     private void SawTheTarget()
     {
-        if (fsm.specificLoS.CheckView(fsm.target) &&
-            fsm.specificLoS.CheckRange(fsm.target) &&
-            fsm.specificLoS.CheckAngle(fsm.target))
+        if (fsm.specificLoS.CheckView(fsm.targetTransform) &&
+            fsm.specificLoS.CheckRange(fsm.targetTransform) &&
+            fsm.specificLoS.CheckAngle(fsm.targetTransform))
         {
             fsm.specificLoS.range = baseRange;
             _sm.ChangeState(EnemyStates.Pursuit);

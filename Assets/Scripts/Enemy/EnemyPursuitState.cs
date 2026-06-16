@@ -14,61 +14,73 @@ public class EnemyPursuitState : State<EnemyStates>
     public override void Execute()
     {
         base.Execute();
-        Pursuit();
-    }
-
-    public void Pursuit()
-    {
-        var toQuarry = fsm.target.position - fsm.transform.position;
-        var distance = toQuarry.magnitude;
-        float t = distance * fsm.predictionFactor;
-
-        var pForward = fsm.transform.forward;
-        var qForward = fsm.target.forward;
-
-        var relativeHeading = Vector3.Dot(pForward, qForward);
-        var toPursuer = (fsm.transform.position - fsm.target.position).normalized;
-        var forwardDot = Vector3.Dot(qForward, toPursuer);
-
-        if (forwardDot > 0 && relativeHeading < -0.95f)
-            t = 0;
-        else
-        {
-            if (relativeHeading < 0) t *= 1.5f;
-            if (forwardDot < 0) t *= 1.2f;
-        }
-
-        var futurePosition = fsm.target.position + fsm.targetRB.velocity * t;
-        var dir = futurePosition - fsm.transform.position;
-        var desired = dir.normalized * fsm.speed;
-
-        var avoidForce = fsm.ComputeAvoidance(); //Ejecución de Obstacle Avoidance
-
-        Vector3 steer; //Inicializa el virado
-        if (avoidForce.HasValue) //Si existe un obstáculo, obtiene la dirección de evasión
-        {
-            var evadeDesired = avoidForce.Value.normalized * fsm.speed; //Inicializa la evasión objetivo multiplicando la fuerza de evasión normalizada por la velocidad.
-            steer = evadeDesired - currentSpeed; //El virado es equivalente a la diferencia entre la evasión objetivo y la dirección actual
-        }
-        else //Si no existe
-        {
-            steer = desired - currentSpeed; //El virado es equivalente a la dirección objetivo menos la actual.
-        }
-
-        steer = Vector3.ClampMagnitude(steer, fsm.maxForce);
-        currentSpeed += steer * Time.deltaTime;
-        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed);
-        currentSpeed.y = 0;
-
-        fsm.transform.position += currentSpeed * Time.deltaTime;
-
-        if (currentSpeed.sqrMagnitude > 0.001f)
-        {
-            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized);
-            fsm.transform.rotation = Quaternion.Slerp(fsm.transform.rotation, targetRotation, fsm.rotationSpeed * Time.deltaTime);
-        }
+        Flocking();
+        MoveWithAvoidance();
 
         TargetDistanceCheck();
+    }
+
+    private Vector3 Pursuit()
+    {
+        if (fsm.target == null) return Vector3.zero;
+
+        Vector3 targetPos = fsm.target.position;
+        Vector3 targetVelocity = fsm.target.velocity;
+        targetVelocity.y = 0;
+
+        float distance = Vector3.Distance(fsm.myPosition, targetPos);
+
+        // Limita el lookAhead: cerca del target predice poco, lejos predice más
+        float maxLookAhead = 1.5f;  // ajustable en segundos
+        float lookAheadTime = Mathf.Min(distance / fsm._maxSpeed, maxLookAhead);
+
+        Vector3 predictedPos = targetPos + targetVelocity * lookAheadTime;
+        predictedPos.y = fsm.myPosition.y;
+
+        Debug.DrawLine(fsm.myPosition, predictedPos, Color.green);
+
+        Vector3 desired = (predictedPos - fsm.myPosition);
+        desired.y = 0;
+        desired.Normalize();
+
+        desired *= fsm._maxSpeed;
+
+        return fsm.CalculateSteering(desired);
+    }
+
+    private void Flocking()
+    {
+        Vector3 pursuitForce = Pursuit() * fsm.targetWeight;
+
+        fsm.AddForce(pursuitForce);
+    }
+
+    private void MoveWithAvoidance()
+    {
+        if (fsm._velocity == Vector3.zero) return;
+
+        Vector3 flatVelocity = fsm._velocity;
+        flatVelocity.y = 0;
+
+        Vector3 deflectedDir = fsm._obstacleAvoidance.GetDir(flatVelocity.normalized, calculateY: false);
+        deflectedDir.y = 0;
+        if (deflectedDir == Vector3.zero) deflectedDir = flatVelocity.normalized;
+        deflectedDir.Normalize();
+
+        Vector3 moveVelocity = deflectedDir * flatVelocity.magnitude;
+
+        if (deflectedDir != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(deflectedDir);
+            fsm.transform.rotation = Quaternion.RotateTowards(
+                fsm.transform.rotation,
+                targetRotation,
+                fsm._rotationSpeed * Time.deltaTime
+            );
+        }
+
+        fsm.transform.position += moveVelocity * Time.deltaTime;
+        fsm._velocity.y = 0;
     }
 
     private void TargetDistanceCheck()

@@ -24,6 +24,7 @@ public class EnemyStackState : State<EnemyStates>
     {
         base.Execute();
         Patrol();
+        MoveWithAvoidance();
     }
 
     private void Patrol()
@@ -32,7 +33,7 @@ public class EnemyStackState : State<EnemyStates>
         {
             if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.5f) //Si la distancia es mayor a 0.5
             {
-                MoveTowards(fsm.wayPoints[currentWP].position); //Sigue acercandose
+                Seek(fsm.wayPoints[currentWP].position); //Sigue acercandose
             }
             else //Si no
             {
@@ -58,7 +59,7 @@ public class EnemyStackState : State<EnemyStates>
             else
             {
                 if (Vector3.Distance(fsm.transform.position, currentStackPos.position) > 0.5f)
-                    MoveTowards(currentStackPos.position);
+                    Seek(currentStackPos.position);
                 else
                     currentStackPos = null;
             }
@@ -67,41 +68,57 @@ public class EnemyStackState : State<EnemyStates>
         SawTheTarget();
     }
 
-    private void MoveTowards(Vector3 targetPosition) //Obstacle Avoidance
+    private Vector3 Seek(Vector3 target)
     {
-        var dir = targetPosition - fsm.transform.position; //Direccion del objetivo.
-        var desired = dir.normalized * fsm.speed; //Direccion a la que va a ir el enemigo
+        Vector3 desired = (target - fsm.transform.position);
+        desired.y = 0;
+        desired.Normalize();
 
-        var avoidForce = fsm.ComputeAvoidance(); //Ejecución de Obstacle Avoidance
+        desired *= fsm._maxSpeed;
 
-        Vector3 steer; //Inicializa el virado
-        if (avoidForce.HasValue) //Si existe un obstáculo, obtiene la dirección de evasión
+        Vector3 steering = desired - fsm._velocity;
+        steering.y = 0;
+        return Vector3.ClampMagnitude(steering, fsm._maxForce);
+    }
+
+    private void Flocking(Vector3 target)
+    {
+        Vector3 seekForce = Seek(target * fsm.targetWeight);
+
+        fsm.AddForce(seekForce);
+    }
+
+    private void MoveWithAvoidance()
+    {
+        if (fsm._velocity == Vector3.zero) return;
+
+        Vector3 flatVelocity = fsm._velocity;
+        flatVelocity.y = 0;
+
+        Vector3 deflectedDir = fsm._obstacleAvoidance.GetDir(flatVelocity.normalized, calculateY: false);
+        deflectedDir.y = 0;
+        if (deflectedDir == Vector3.zero) deflectedDir = flatVelocity.normalized;
+        deflectedDir.Normalize();
+
+        Vector3 moveVelocity = deflectedDir * flatVelocity.magnitude;
+
+        if (deflectedDir != Vector3.zero)
         {
-            var evadeDesired = avoidForce.Value.normalized * fsm.speed; //Inicializa la evasión objetivo multiplicando la fuerza de evasión normalizada por la velocidad.
-            steer = evadeDesired - currentSpeed; //El virado es equivalente a la diferencia entre la evasión objetivo y la dirección actual
-        }
-        else //Si no existe
-        {
-            steer = desired - currentSpeed; //El virado es equivalente a la dirección objetivo menos la actual.
+            Quaternion targetRotation = Quaternion.LookRotation(deflectedDir);
+            fsm.transform.rotation = Quaternion.RotateTowards(
+                fsm.transform.rotation,
+                targetRotation,
+                fsm._rotationSpeed * Time.deltaTime
+            );
         }
 
-        steer = Vector3.ClampMagnitude(steer, fsm.maxForce); //Camplea la magnitud de la dirección entre si mismo y la potencia máxima de virado.
-        currentSpeed += steer * Time.deltaTime; //le suma a la dirección actual el virado a lo largo del tiempo.
-        currentSpeed = Vector3.ClampMagnitude(currentSpeed, fsm.speed); //Clampea la magnitud de la dirección actual entre si misma y la velocidad.
-        currentSpeed.y = 0; //Neutraliza la altura de la dirección actual
-
-        fsm.transform.position += currentSpeed * Time.deltaTime; //Suma a la posición.
-
-        if (currentSpeed.sqrMagnitude > 0.001f) //Si la magnitud al cuadrado es menor al un número infimo
-        {
-            var targetRotation = Quaternion.LookRotation(currentSpeed.normalized); //Inicializa rotacion objetivo
-            fsm.transform.rotation = Quaternion.Slerp(fsm.transform.rotation, targetRotation, fsm.rotationSpeed * Time.deltaTime); //La iguala a la rotacion del transform
-        }
+        fsm.transform.position += moveVelocity * Time.deltaTime;
+        fsm._velocity.y = 0;
     }
 
     private void SawTheTarget()
     {
-        if (fsm.ViewLoS.CheckView(fsm.target) && fsm.ViewLoS.CheckRange(fsm.target) && fsm.ViewLoS.CheckAngle(fsm.target))
+        if (fsm.ViewLoS.CheckView(fsm.targetTransform) && fsm.ViewLoS.CheckRange(fsm.targetTransform) && fsm.ViewLoS.CheckAngle(fsm.targetTransform))
         {
             _sm.ChangeState(EnemyStates.SpecificSee);
         }
