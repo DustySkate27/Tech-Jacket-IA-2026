@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class EnemyGroupArriveState : State<EnemyStates>
 {
     private EnemyGroupFSM enemyGroupFSM;
 
-    public float arriveRadius = 50f;  
+    public float arriveRadius = 10f;  
     public float stopRadius = 2f;
+    
 
     public EnemyGroupArriveState(EnemyGroupFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
@@ -25,23 +27,26 @@ public class EnemyGroupArriveState : State<EnemyStates>
 
     private Vector3 Arrive(Vector3 targetPos)
     {
-        Vector3 toTarget = targetPos - enemyGroupFSM.myPosition;
-        toTarget.y = 0;
-        float distance = toTarget.magnitude;
+        Vector3 playerVelocity = enemyGroupFSM.target.velocity;
+        playerVelocity.y = 0;
 
-        // Dentro del stopRadius, frenamos completamente
-        if (distance < stopRadius)
+        float distToTarget = Vector3.Distance(enemyGroupFSM.myPosition, targetPos);
+
+        // Poca predicción, muy reactivo
+        float timeToReach = Mathf.Min(distToTarget / enemyGroupFSM._maxSpeed, 0.1f);
+        Vector3 predictedPos = targetPos + playerVelocity * timeToReach;
+        predictedPos.y = enemyGroupFSM.myPosition.y;
+
+        Vector3 toTarget = predictedPos - enemyGroupFSM.myPosition;
+        toTarget.y = 0;
+
+        if (toTarget.magnitude < stopRadius)
         {
             enemyGroupFSM._velocity = Vector3.zero;
             return Vector3.zero;
         }
 
-        // Entre stopRadius y arriveRadius, reducimos la velocidad proporcionalmente
-        float speed = enemyGroupFSM._maxSpeed;
-        if (distance < arriveRadius)
-            speed = enemyGroupFSM._maxSpeed * (distance / arriveRadius);
-
-        Vector3 desired = toTarget.normalized * speed;
+        Vector3 desired = toTarget.normalized * enemyGroupFSM._maxSpeed;
         return enemyGroupFSM.CalculateSteering(desired);
     }
 
@@ -103,7 +108,7 @@ public class EnemyGroupArriveState : State<EnemyStates>
         Vector3 toAvg = avgPosition - enemyGroupFSM.myPosition;
         toAvg.y = 0;
         toAvg.Normalize();
-        return enemyGroupFSM.CalculateSteering(toAvg);
+        return enemyGroupFSM.CalculateSteering(toAvg * enemyGroupFSM._maxSpeed);
     }
 
     private Vector3 Alignment()
@@ -155,7 +160,9 @@ public class EnemyGroupArriveState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(enemyGroupFSM.transform.position, enemyGroupFSM.target.position) > enemyGroupFSM.ViewLoS.range)
+        if (!enemyGroupFSM.ViewLoS.CheckView(enemyGroupFSM.target.transform) ||
+        !enemyGroupFSM.ViewLoS.CheckRange(enemyGroupFSM.target.transform) ||
+        !enemyGroupFSM.ViewLoS.CheckAngle(enemyGroupFSM.target.transform))
         {
             _sm.ChangeState(EnemyStates.Pursuit);
         }

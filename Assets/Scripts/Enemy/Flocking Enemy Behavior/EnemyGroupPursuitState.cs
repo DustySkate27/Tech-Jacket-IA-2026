@@ -28,18 +28,16 @@ public class EnemyGroupPursuitState : State<EnemyStates>
 
         float distance = Vector3.Distance(enemyGroupFSM.myPosition, targetPos);
 
-        // Limita el lookAhead: cerca del target predice poco, lejos predice más
-        float maxLookAhead = 1.5f;  // ajustable en segundos
-        float lookAheadTime = Mathf.Min(distance / enemyGroupFSM._maxSpeed, maxLookAhead);
+        // Predicción más agresiva que Arrive
+        float lookAheadTime = Mathf.Min(distance / enemyGroupFSM._maxSpeed, 1.5f);
 
         Vector3 predictedPos = targetPos + targetVelocity * lookAheadTime;
         predictedPos.y = enemyGroupFSM.myPosition.y;
 
-        Debug.DrawLine(enemyGroupFSM.myPosition, predictedPos, Color.green);
-
         Vector3 desired = (predictedPos - enemyGroupFSM.myPosition);
         desired.y = 0;
         desired.Normalize();
+        desired *= enemyGroupFSM._maxSpeed * 0.5f; // ← más lento que Arrive
 
         return enemyGroupFSM.CalculateSteering(desired);
     }
@@ -152,7 +150,9 @@ public class EnemyGroupPursuitState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(enemyGroupFSM.transform.position, enemyGroupFSM.target.position) < enemyGroupFSM.ViewLoS.range)
+        if (enemyGroupFSM.ViewLoS.CheckView(enemyGroupFSM.target.transform) &&
+        enemyGroupFSM.ViewLoS.CheckRange(enemyGroupFSM.target.transform) &&
+        enemyGroupFSM.ViewLoS.CheckAngle(enemyGroupFSM.target.transform))
         {
             _sm.ChangeState(EnemyStates.Arrive);
         }

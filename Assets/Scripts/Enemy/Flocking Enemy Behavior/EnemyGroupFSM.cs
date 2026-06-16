@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyGroupFSM : MonoBehaviour
@@ -22,9 +20,11 @@ public class EnemyGroupFSM : MonoBehaviour
     [Header("Target")]
     [SerializeField] public Rigidbody target;
     [SerializeField, Range(0.0f, 3.0f)] public float targetWeight = 2f;
+    [SerializeField] public float predictionPower;
 
     [Header("WayPoints")]
     [SerializeField] public Transform[] wayPoints;
+    [SerializeField] public bool isLeader;
 
     [Header("Obstacle Avoidance")]
     [SerializeField] public float obstacleRadius = 15f;
@@ -67,7 +67,6 @@ public class EnemyGroupFSM : MonoBehaviour
         State<EnemyStates> arrive = new EnemyGroupArriveState(this, _sm);
         State<EnemyStates> pursuit = new EnemyGroupPursuitState(this, _sm);
         State<EnemyStates> patrol = new EnemyGroupPatrolState(this, _sm);
-        //State<EnemyStates> patrol = new NewEnemyPatrolState(this, _sm);
 
         patrol.AddTransition(pursuit, EnemyStates.Pursuit);
         pursuit.AddTransition(arrive, EnemyStates.Arrive);
@@ -92,6 +91,15 @@ public class EnemyGroupFSM : MonoBehaviour
         force.y = 0;
         _velocity.y = 0;
         _velocity = Vector3.ClampMagnitude(_velocity + force * Time.deltaTime, _maxSpeed);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject == target.gameObject)
+        {
+            Debug.Log("La tire?");
+            EventBus.Publish(new OnPlayerDeath());
+        }
     }
 
     private void OnDrawGizmos()

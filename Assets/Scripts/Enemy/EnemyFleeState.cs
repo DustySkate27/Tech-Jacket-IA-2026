@@ -26,7 +26,7 @@ public class EnemyFleeState : State<EnemyStates>
         Vector3 desired = (fsm.transform.position - target);
         desired.y = 0;
         desired.Normalize();
-        desired *= fsm._maxSpeed * 1.5f;
+        desired *= fsm._maxSpeed * 0.7f;
 
         Vector3 steering = desired - fsm._velocity;
         steering.y = 0;
@@ -53,7 +53,7 @@ public class EnemyFleeState : State<EnemyStates>
         if (deflectedDir == Vector3.zero) deflectedDir = flatVelocity.normalized;
         deflectedDir.Normalize();
 
-        Vector3 moveVelocity = deflectedDir * flatVelocity.magnitude;
+        Vector3 moveVelocity = deflectedDir * fsm._maxSpeed * 0.7f;
 
         if (deflectedDir != Vector3.zero)
         {

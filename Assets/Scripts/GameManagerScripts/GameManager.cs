@@ -4,14 +4,20 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public void GoToMenu()
+    private void Awake()
+    {
+        EventBus.Subscribe<OnPlayerDeath>(ResetCurrentScene);
+        EventBus.Subscribe<OnPlayerWin>(GoToMenu);
+    }
+
+    public void GoToMenu(OnPlayerWin onPlayerWin)
     {
         SceneManager.LoadScene("menu");
     }
 
     public void LoadFirstLevel()
     {
-        SceneManager.LoadScene("menu");
+        SceneManager.LoadScene("Theta");
     }
 
     public void LoadSecondtLevel()
@@ -19,7 +25,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("menu");
     }
 
-    public void ResetCurrentScene()
+    public void ResetCurrentScene(OnPlayerDeath onPlayerDeath)
     {
         string sceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(sceneName);

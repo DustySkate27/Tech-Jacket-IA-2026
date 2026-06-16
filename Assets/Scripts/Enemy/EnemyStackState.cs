@@ -33,7 +33,7 @@ public class EnemyStackState : State<EnemyStates>
         {
             if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.5f) //Si la distancia es mayor a 0.5
             {
-                Seek(fsm.wayPoints[currentWP].position); //Sigue acercandose
+                Flocking(fsm.wayPoints[currentWP].position); //Sigue acercandose
             }
             else //Si no
             {
@@ -59,7 +59,7 @@ public class EnemyStackState : State<EnemyStates>
             else
             {
                 if (Vector3.Distance(fsm.transform.position, currentStackPos.position) > 0.5f)
-                    Seek(currentStackPos.position);
+                    Flocking(currentStackPos.position);
                 else
                     currentStackPos = null;
             }
@@ -83,7 +83,7 @@ public class EnemyStackState : State<EnemyStates>
 
     private void Flocking(Vector3 target)
     {
-        Vector3 seekForce = Seek(target * fsm.targetWeight);
+        Vector3 seekForce = Seek(target) * fsm.targetWeight;
 
         fsm.AddForce(seekForce);
     }

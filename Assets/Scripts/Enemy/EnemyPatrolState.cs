@@ -31,7 +31,6 @@ public class EnemyPatrolState : State<EnemyStates>
     {
         base.Execute();
 
-        //Patrol();
         ThetaPatrol();
         MoveWithAvoidance();
     }
@@ -60,7 +59,7 @@ public class EnemyPatrolState : State<EnemyStates>
                 lastNode = path[path.Count - 1];
                 path = null;
             }
-            else if (currentWP < path.Count && Vector3.Distance(fsm.transform.position, path[currentWP].transform.position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
+            else if (currentWP < path.Count && Vector3.Distance(fsm.transform.position, path[currentWP].transform.position) > 2f) //Si la distancia es mayor a 1, estan lejos todavia
             {
                 Flocking(path[currentWP].transform.position); //Se acercan al waypoint asignado
             }
@@ -110,7 +109,7 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private void Flocking(Vector3 target)
     {
-        Vector3 seekForce = Seek(target * fsm.targetWeight);
+        Vector3 seekForce = Seek(target) * fsm.targetWeight;
 
         fsm.AddForce(seekForce);
     }
@@ -154,17 +153,8 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private PF_WNode ChooseNextNode()
     {
-        Debug.Log("nodos actuales");
 
-        foreach (var pair in dynamicWeights)
-        {
-            Debug.Log($"{pair.Key.name} -> {pair.Value:F2}");
-        }
-
-        PF_WNode selected =
-            MyRandom.RouletteWheelSelection(dynamicWeights);
-
-        Debug.Log($"nodo seleccionado: {selected.name}");
+        PF_WNode selected = MyRandom.RouletteWheelSelection(dynamicWeights);
 
         dynamicWeights[selected] *= 0.3f;
 
@@ -174,13 +164,6 @@ public class EnemyPatrolState : State<EnemyStates>
             {
                 dynamicWeights[node] += 0.2f;
             }
-        }
-
-        Debug.Log("nodos actualizados");
-
-        foreach (var pair in dynamicWeights)
-        {
-            Debug.Log($"{pair.Key.name} -> {pair.Value:F2}");
         }
 
         return selected;

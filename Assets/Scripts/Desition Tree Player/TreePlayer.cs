@@ -68,7 +68,7 @@ public class TreePlayer : MonoBehaviour
         Debug.Log("Objetivo cumplido.");
         Destroy(target);
         target = null;
-        SceneManager.LoadScene("SeekTest");
+        EventBus.Publish(new OnPlayerWin());
     }
 
 

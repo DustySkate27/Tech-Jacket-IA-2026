@@ -42,7 +42,7 @@ public class EnemyEvadeState : State<EnemyStates>
         Vector3 desired = (fsm.myPosition - predictedPos);
         desired.y = 0;
         desired.Normalize();
-        desired *= fsm._maxSpeed;
+        desired *= fsm._maxSpeed * 4f;
 
         Vector3 steering = desired - fsm._velocity;
         steering.y = 0;
@@ -67,7 +67,7 @@ public class EnemyEvadeState : State<EnemyStates>
         if (deflectedDir == Vector3.zero) deflectedDir = flatVelocity.normalized;
         deflectedDir.Normalize();
 
-        Vector3 moveVelocity = deflectedDir * flatVelocity.magnitude;
+        Vector3 moveVelocity = deflectedDir * fsm._maxSpeed * 4f; 
 
         if (deflectedDir != Vector3.zero)
         {

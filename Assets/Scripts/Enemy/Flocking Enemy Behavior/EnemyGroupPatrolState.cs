@@ -7,11 +7,14 @@ public class EnemyGroupPatrolState : State<EnemyStates>
     private EnemyGroupFSM enemyGroupFSM;
     private Transform[] wayPoints;
     private int currentWayPoint = 0;
+    private bool reachedWayPoint = false;
+    private bool isLeader;
 
     public EnemyGroupPatrolState(EnemyGroupFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         enemyGroupFSM = fsm;
         wayPoints = fsm.wayPoints;
+        isLeader = fsm.isLeader; // ← flag en el FSM, solo uno lo tiene en true en el inspector
 
         EventBus.Subscribe<ChangeWayPoint>(ChangeTargetWayPoint);
         EventBus.Subscribe<EnterPursuitState>(ChangePursuitState);
@@ -20,9 +23,6 @@ public class EnemyGroupPatrolState : State<EnemyStates>
     public override void Awake()
     {
         base.Awake();
-
-        EventBus.Subscribe<ChangeWayPoint>(ChangeTargetWayPoint);
-        EventBus.Subscribe<EnterPursuitState>(ChangePursuitState);
     }
 
     public override void Execute()
@@ -45,12 +45,15 @@ public class EnemyGroupPatrolState : State<EnemyStates>
 
     private void CheckWayPoint()
     {
+        if (!isLeader) return;
         if (wayPoints == null || wayPoints.Length == 0) return;
 
         float dist = Vector3.Distance(enemyGroupFSM.myPosition, wayPoints[currentWayPoint].position);
 
-        if (dist < 10f)
+        if (dist < 5f && !reachedWayPoint)
         {
+            reachedWayPoint = true;
+            
             EventBus.Publish(new ChangeWayPoint());
         }
     }
@@ -58,7 +61,7 @@ public class EnemyGroupPatrolState : State<EnemyStates>
     public void ChangeTargetWayPoint(ChangeWayPoint wayPointEvent)
     {
         currentWayPoint = (currentWayPoint + 1) % wayPoints.Length;
-        Debug.Log(currentWayPoint + " " + enemyGroupFSM.name);
+        reachedWayPoint = false; 
     }
 
     private Vector3 Seek(Vector3 target)
@@ -66,6 +69,7 @@ public class EnemyGroupPatrolState : State<EnemyStates>
         Vector3 desired = (target - enemyGroupFSM.transform.position);
         desired.y = 0;
         desired.Normalize();
+        desired *= enemyGroupFSM._maxSpeed;
         return enemyGroupFSM.CalculateSteering(desired);
     }
 

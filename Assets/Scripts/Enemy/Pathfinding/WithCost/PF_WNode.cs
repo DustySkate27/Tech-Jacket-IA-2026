@@ -25,7 +25,6 @@ public class PF_WNode : MonoBehaviour
 
     public bool CanSee(PF_WNode target)
     {
-        Debug.Log(los);
         if (los == null) return false;
         return los.CheckRange(target.transform) && los.CheckView(target.transform);
     }
