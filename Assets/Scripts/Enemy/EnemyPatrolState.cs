@@ -13,11 +13,19 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private List<PF_WNode> path = null;
 
+    private Dictionary<PF_WNode, float> dynamicWeights = new();
+
     public EnemyPatrolState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         this.fsm = fsm;
         currentWP = fsm.currentWP;
+
+        foreach (var node in fsm.nodeList)
+        {
+            dynamicWeights[node] = 1f;
+        }
     }
+
 
     public override void Execute()
     {
@@ -146,9 +154,36 @@ public class EnemyPatrolState : State<EnemyStates>
 
     private PF_WNode ChooseNextNode()
     {
-        //ACA HAY QUE METER EL DYNAMIC RANDOM PIPA
+        Debug.Log("nodos actuales");
 
-        return fsm.nodeList[UnityEngine.Random.Range(0,fsm.nodeList.Count)];
+        foreach (var pair in dynamicWeights)
+        {
+            Debug.Log($"{pair.Key.name} -> {pair.Value:F2}");
+        }
+
+        PF_WNode selected =
+            MyRandom.RouletteWheelSelection(dynamicWeights);
+
+        Debug.Log($"nodo seleccionado: {selected.name}");
+
+        dynamicWeights[selected] *= 0.3f;
+
+        foreach (var node in new List<PF_WNode>(dynamicWeights.Keys))
+        {
+            if (node != selected)
+            {
+                dynamicWeights[node] += 0.2f;
+            }
+        }
+
+        Debug.Log("nodos actualizados");
+
+        foreach (var pair in dynamicWeights)
+        {
+            Debug.Log($"{pair.Key.name} -> {pair.Value:F2}");
+        }
+
+        return selected;
     }
 
 
