@@ -97,7 +97,6 @@ public class EnemyGroupFSM : MonoBehaviour
     {
         if (collision.gameObject == target.gameObject)
         {
-            Debug.Log("La tire?");
             EventBus.Publish(new OnPlayerDeath());
         }
     }

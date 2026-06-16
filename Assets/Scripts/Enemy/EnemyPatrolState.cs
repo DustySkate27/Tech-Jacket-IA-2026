@@ -85,9 +85,6 @@ public class EnemyPatrolState : State<EnemyStates>
                 path = null;
                 lastNode = null;
             }
-
-            Debug.Log(newStart.name);
-            Debug.Log(newTarget.name);
         }
         
 
