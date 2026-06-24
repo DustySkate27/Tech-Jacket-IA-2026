@@ -37,7 +37,15 @@ public class EnemyFSM : MonoBehaviour
     [SerializeField] public LineOfSight specificLoS;
 
     //TypeObject
+    private Mesh currentMesh;
+    private Mesh baseMesh;
+    private Material currentMaterial;
+    [Header("Escaper Sets")]
     public bool isEscaper;
+    public Color hiding;
+    public Color evading;
+    public Color flee;
+    public Mesh evadingMesh;
 
     [SerializeField] public float _maxSpeed = 20f;
     [SerializeField] public float _maxForce = 100f;
@@ -65,6 +73,10 @@ public class EnemyFSM : MonoBehaviour
     private void Awake()
     {
         myTransform = transform;
+        currentMesh = GetComponent<Mesh>();
+        currentMesh = evadingMesh;
+        baseMesh = currentMesh;
+        currentMaterial = GetComponent<Material>();
 
         _obstacleAvoidance = new ObstacleAvoidance(
             myTransform,
@@ -93,7 +105,7 @@ public class EnemyFSM : MonoBehaviour
 
         if (isEscaper)
         {
-            patrol = new EnemyStackState(this, _sm);
+            patrol = new EnemyHidingState(this, _sm);
             specificSee = new EnemyEvadeState(this, _sm);
             flee = new EnemyFleeState(this, _sm);
         }

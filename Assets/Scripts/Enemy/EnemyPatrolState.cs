@@ -9,7 +9,6 @@ public class EnemyPatrolState : State<EnemyStates>
     private EnemyFSM fsm;
     private int currentWP;
     private PF_WNode lastNode;
-    private Vector3 currentSpeed;
 
     private List<PF_WNode> path = null;
 

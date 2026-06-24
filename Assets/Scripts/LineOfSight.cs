@@ -29,38 +29,6 @@ public class LineOfSight : MonoBehaviour
         return !Physics.Raycast(Origin, dirToTarget.normalized, dirToTarget.magnitude, obsMask);
     }
 
-
-    //public List<PF_WNode> RadialDetection(List<PF_WNode> currentNeighbours) //Elementos en rango de LineOfSight
-    //{
-    //    if(angle != 360)
-    //    {
-    //        Debug.LogWarning("Angle not set to 360. RadialDetection only works with full circumference");
-    //    }
-    //    else
-    //    {
-    //        Collider[] colliders = new Collider[100];
-    //        List<PF_WNode> notNeighbours = new List<PF_WNode>();
-
-    //        int count = Physics.OverlapSphereNonAlloc(transform.position, range, colliders, obsMask);
-
-    //        for (int i = 0; i < count; i++)
-    //        {
-    //            if (colliders[i].TryGetComponent(out PF_WNode node))
-    //            notNeighbours.Add(node);
-    //        }
-
-    //        foreach (PF_WNode node in currentNeighbours)
-    //        {
-    //            if(notNeighbours.Contains(node))
-    //            notNeighbours.Remove(node);
-    //        }
-
-    //        return notNeighbours;
-    //    }
-
-    //    return null;
-    //}
-
     protected Vector3 Origin
     {
         get

@@ -9,7 +9,6 @@ public class PF_WNode : MonoBehaviour
     private Renderer rend;
     public List<PF_WNode> Neighbors => neighbors;
     private LineOfSight los;
-    private List<PF_WNode> onRange;
 
     public int X => x;
     public int Y => y;

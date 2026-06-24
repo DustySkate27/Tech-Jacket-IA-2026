@@ -1,72 +1,81 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-public class EnemyStackState : State<EnemyStates>
+public class EnemyHidingState : State<EnemyStates>
 {
     private EnemyFSM fsm;
-    private Stack<Transform> stackWP;
-    private bool goingBack = false;
-    private Transform currentStackPos = null;
     private int currentWP;
 
-    private Vector3 currentSpeed;
 
-    public EnemyStackState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
+    private List<PF_WNode> path = null;
+    private PF_WNode lastNode;
+    private Dictionary<PF_WNode, float> dynamicWeights = new();
+
+
+
+    public EnemyHidingState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         this.fsm = fsm;
         currentWP = fsm.currentWP;
-        stackWP = new Stack<Transform>();
+
+        foreach (var node in fsm.nodeList)
+        {
+            dynamicWeights[node] = 1f;
+        }
     }
 
     public override void Execute()
     {
         base.Execute();
-        Patrol();
+        ThetaPatrol();
         MoveWithAvoidance();
     }
 
-    private void Patrol()
+    private void ThetaPatrol()
     {
-        if (stackWP.Count != fsm.wayPoints.Length && !goingBack) //Si el stack tiene distintos elementos de la lista de wayPoints y goingBack esta desactivado
+        if (path != null)
         {
-            if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 0.5f) //Si la distancia es mayor a 0.5
+            if (currentWP >= path.Count)
             {
-                Flocking(fsm.wayPoints[currentWP].position); //Sigue acercandose
+                lastNode = path[path.Count - 1];
+                path = null;
             }
-            else //Si no
+            else if (currentWP < path.Count && Vector3.Distance(fsm.transform.position, path[currentWP].transform.position) > 2f) //Si la distancia es mayor a 1, estan lejos todavia
             {
-                stackWP.Push(fsm.wayPoints[currentWP]); //Pushea al stack
-                currentWP++; //Avanza al siguiente WayPoint
-                if (currentWP >= fsm.wayPoints.Length) //Si se excede la cantidad de waypoints
-                {
-                    goingBack = true; //Se inicia el proceso inverso de recorrido
-                    currentWP = 0; //Se reinician los waypoints
-                }
-            }
-        }
-        else if (goingBack) //Si tiene que recorrer el stack
-        {
-            if (currentStackPos == null) 
-            {
-                if (!stackWP.TryPop(out currentStackPos))
-                {
-                    goingBack = false;
-                    _sm.ChangeState(EnemyStates.Idle);
-                }
+                Flocking(path[currentWP].transform.position); //Se acercan al waypoint asignado
             }
             else
             {
-                if (Vector3.Distance(fsm.transform.position, currentStackPos.position) > 0.5f)
-                    Flocking(currentStackPos.position);
-                else
-                    currentStackPos = null;
+                currentWP++;
+            }
+        }
+        else
+        {
+            currentWP = 0;
+
+            PF_WNode newStart = lastNode ?? ChooseNextNode();
+            PF_WNode newTarget = ChooseNextNode();
+            do { newTarget = ChooseNextNode(); } while (newTarget == newStart);
+
+            path = Theta.ThetaStar(newStart, node => node == newTarget, node => node.Neighbors,
+                (a, b) => Vector3.Distance(a.transform.position, b.transform.position),
+                node => Vector3.Distance(node.transform.position, newTarget.transform.position), (a, b) => a.CanSee(b));
+
+            if (path.Count == 0)
+            {
+                path = null;
+                lastNode = null;
             }
         }
 
-        SawTheTarget();
+
+        SawTheTarget(); //Si ven al player cambia su estado
     }
+
+    
 
     private Vector3 Seek(Vector3 target)
     {
@@ -114,6 +123,24 @@ public class EnemyStackState : State<EnemyStates>
 
         fsm.transform.position += moveVelocity * Time.deltaTime;
         fsm._velocity.y = 0;
+    }
+
+    private PF_WNode ChooseNextNode()
+    {
+
+        PF_WNode selected = MyRandom.RouletteWheelSelection(dynamicWeights);
+
+        dynamicWeights[selected] *= 0.3f;
+
+        foreach (var node in new List<PF_WNode>(dynamicWeights.Keys))
+        {
+            if (node != selected)
+            {
+                dynamicWeights[node] += 0.2f;
+            }
+        }
+
+        return selected;
     }
 
     private void SawTheTarget()
