@@ -7,7 +7,7 @@ public class EnemyHurtBox : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneManager.LoadScene("SeekTest");
+            EventBus.Publish(new OnPlayerDeath());
             Debug.Log("Player hit!");
         }
     }

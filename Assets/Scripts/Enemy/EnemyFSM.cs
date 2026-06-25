@@ -10,6 +10,7 @@ public enum EnemyStates
     Pursuit,
     Flee,
     Seek,
+    Fatigue,
     Arrive,
     Attack
 }
@@ -47,6 +48,7 @@ public class EnemyFSM : MonoBehaviour
     [Header("Escaper Sets")]
     public bool isEscaper;
     public Color fleeColor;
+    public Color fatigueColor;
     public Mesh fleeMesh;
 
     [Header("Chaser Sets")]
@@ -111,12 +113,14 @@ public class EnemyFSM : MonoBehaviour
         State<EnemyStates> flee = null;
         State<EnemyStates> arrive = null;
         State<EnemyStates> attack = null;
+        State<EnemyStates> fatigue = null;
 
         if (isEscaper)
         {
             patrol = new EnemyHidingState(this, _sm);
             specificSee = new EnemyEvadeState(this, _sm);
             flee = new EnemyFleeState(this, _sm);
+            fatigue = new EnemyFatigueState(this, _sm);
         }
         else
         {
@@ -142,7 +146,9 @@ public class EnemyFSM : MonoBehaviour
             specificSee.AddTransition(idle, EnemyStates.Idle);
             specificSee.AddTransition(flee, EnemyStates.Flee);
 
-            flee.AddTransition(idle, EnemyStates.Idle);
+            flee.AddTransition(fatigue, EnemyStates.Fatigue);
+
+            fatigue.AddTransition(idle, EnemyStates.Idle);
         }
         else
         {

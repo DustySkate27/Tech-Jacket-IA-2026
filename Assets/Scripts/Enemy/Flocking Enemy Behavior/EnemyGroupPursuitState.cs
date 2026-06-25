@@ -154,6 +154,7 @@ public class EnemyGroupPursuitState : State<EnemyStates>
         enemyGroupFSM.ViewLoS.CheckRange(enemyGroupFSM.target.transform) &&
         enemyGroupFSM.ViewLoS.CheckAngle(enemyGroupFSM.target.transform))
         {
+            enemyGroupFSM.rend.material.color = enemyGroupFSM.arriveColor;
             _sm.ChangeState(EnemyStates.Arrive);
         }
     }

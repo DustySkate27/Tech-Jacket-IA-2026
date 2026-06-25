@@ -23,7 +23,7 @@ public class EnemySeekState : State<EnemyStates>
         {
             if(fsm.specificLoS.range < fsm.ViewLoS.range)
             {
-                fsm.specificLoS.range += 5 * Time.deltaTime;
+                fsm.specificLoS.range += 10 * Time.deltaTime;
             }
             else
             {

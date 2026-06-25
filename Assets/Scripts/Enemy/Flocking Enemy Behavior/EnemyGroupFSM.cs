@@ -33,6 +33,15 @@ public class EnemyGroupFSM : MonoBehaviour
     [SerializeField] public LayerMask obstacleMask;
     [SerializeField] public int maxObstacles = 10;
 
+    public MeshFilter currentMesh;
+    public Mesh baseMesh;
+    public Mesh pursuitMesh;
+    public Renderer rend;
+    public Color patrolColor;
+    public Color arriveColor;
+    public Color pursuitColor;
+
+
     public ObstacleAvoidance _obstacleAvoidance;
     public Transform myTransform;
     [SerializeField] public Collider myCollider;
@@ -46,6 +55,10 @@ public class EnemyGroupFSM : MonoBehaviour
     private void Awake()
     {
         myTransform = transform;
+
+        currentMesh = GetComponent<MeshFilter>();
+        baseMesh = currentMesh.mesh;
+        rend = GetComponent<MeshRenderer>();
 
         _obstacleAvoidance = new ObstacleAvoidance(
             myTransform,
@@ -63,10 +76,9 @@ public class EnemyGroupFSM : MonoBehaviour
 
         _sm = new StateMachine<EnemyStates>();
 
-        State<EnemyStates> seek = new EnemyGroupSeekState(this, _sm);
-        State<EnemyStates> arrive = new EnemyGroupArriveState(this, _sm);
-        State<EnemyStates> pursuit = new EnemyGroupPursuitState(this, _sm);
         State<EnemyStates> patrol = new EnemyGroupPatrolState(this, _sm);
+        State<EnemyStates> pursuit = new EnemyGroupPursuitState(this, _sm);
+        State<EnemyStates> arrive = new EnemyGroupArriveState(this, _sm);
 
         patrol.AddTransition(pursuit, EnemyStates.Pursuit);
         pursuit.AddTransition(arrive, EnemyStates.Arrive);

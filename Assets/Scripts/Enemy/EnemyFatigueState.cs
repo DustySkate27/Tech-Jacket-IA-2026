@@ -1,12 +1,12 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyFleeState : State<EnemyStates>
+public class EnemyFatigueState : State<EnemyStates>
 {
     private EnemyFSM fsm;
 
-    public EnemyFleeState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
+    public EnemyFatigueState(EnemyFSM fsm, StateMachine<EnemyStates> sm) : base(sm)
     {
         this.fsm = fsm;
     }
@@ -22,7 +22,7 @@ public class EnemyFleeState : State<EnemyStates>
 
     private Vector3 FleeForce(Vector3 target)
     {
-        // Direcci�n invertida: se aleja del target en vez de acercarse
+        // Dirección invertida: se aleja del target en vez de acercarse
         Vector3 desired = (fsm.transform.position - target);
         desired.y = 0;
         desired.Normalize();
@@ -53,7 +53,7 @@ public class EnemyFleeState : State<EnemyStates>
         if (deflectedDir == Vector3.zero) deflectedDir = flatVelocity.normalized;
         deflectedDir.Normalize();
 
-        Vector3 moveVelocity = deflectedDir * fsm._maxSpeed ;
+        Vector3 moveVelocity = deflectedDir * fsm._maxSpeed * 0.5f;
 
         if (deflectedDir != Vector3.zero)
         {
@@ -73,8 +73,9 @@ public class EnemyFleeState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 50f)
         {
-            fsm.rend.material.color = fsm.idleColor;
-            _sm.ChangeState(EnemyStates.Fatigue);
+            fsm.rend.material.color = fsm.fatigueColor;
+            fsm.currentMesh.mesh = fsm.baseMesh;
+            _sm.ChangeState(EnemyStates.Idle);
         }
     }
 }

@@ -214,6 +214,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   maxObstacles: 10
+  currentMesh: {fileID: 0}
+  baseMesh: {fileID: 0}
+  pursuitMesh: {fileID: 0}
+  rend: {fileID: 0}
+  patrolColor: {r: 0.5202284, g: 0, b: 1, a: 0}
+  arriveColor: {r: 1, g: 0, b: 0.7253394, a: 0}
+  pursuitColor: {r: 1, g: 0, b: 0.43685627, a: 0}
   myTransform: {fileID: 207395906908038744}
   myCollider: {fileID: 7397178947280714752}
   viewLoS: {fileID: 3886301195840632798}

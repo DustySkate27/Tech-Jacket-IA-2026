@@ -180,6 +180,8 @@ public class EnemyGroupPatrolState : State<EnemyStates>
 
     private void ChangePursuitState(EnterPursuitState pursuitState)
     {
+        enemyGroupFSM.rend.material.color = enemyGroupFSM.pursuitColor;
+        enemyGroupFSM.currentMesh.mesh = enemyGroupFSM.pursuitMesh;
         _sm.ChangeState(EnemyStates.Pursuit);
     }
 
