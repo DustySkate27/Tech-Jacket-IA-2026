@@ -27,6 +27,7 @@ public class EnemyIdleState : State<EnemyStates>
         else
         {
             counter = 0;
+            fsm.rend.material.color = fsm.patrolColor;
             _sm.ChangeState(EnemyStates.Patrol);
         }
         SawTheTarget();
@@ -36,6 +37,7 @@ public class EnemyIdleState : State<EnemyStates>
     {
         if (fsm.ViewLoS.CheckView(fsm.targetTransform) && fsm.ViewLoS.CheckRange(fsm.targetTransform) && fsm.ViewLoS.CheckAngle(fsm.targetTransform))
         {
+            fsm.rend.material.color = fsm.specificSeeColor;
             _sm.ChangeState(EnemyStates.SpecificSee);
         }
     }

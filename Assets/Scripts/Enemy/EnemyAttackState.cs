@@ -54,9 +54,16 @@ public class EnemyAttackState : State<EnemyStates>
     void EndAttack()
     {
         if (fsm.SpecificLoS.CheckRange(fsm.targetTransform) && fsm.SpecificLoS.CheckAngle(fsm.targetTransform) && fsm.SpecificLoS.CheckView(fsm.targetTransform))
+        {
+            fsm.rend.material.color = fsm.pursuitColor;
             _sm.ChangeState(EnemyStates.Pursuit);
+        }
         else
+        {
+            fsm.rend.material.color = fsm.idleColor;
+            fsm.currentMesh.mesh = fsm.baseMesh;
             _sm.ChangeState(EnemyStates.Idle);
+        }
     }
 
 

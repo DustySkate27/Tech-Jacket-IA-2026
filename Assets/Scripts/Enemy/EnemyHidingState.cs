@@ -147,6 +147,7 @@ public class EnemyHidingState : State<EnemyStates>
     {
         if (fsm.ViewLoS.CheckView(fsm.targetTransform) && fsm.ViewLoS.CheckRange(fsm.targetTransform) && fsm.ViewLoS.CheckAngle(fsm.targetTransform))
         {
+            fsm.rend.material.color = fsm.specificSeeColor;
             _sm.ChangeState(EnemyStates.SpecificSee);
         }
     }

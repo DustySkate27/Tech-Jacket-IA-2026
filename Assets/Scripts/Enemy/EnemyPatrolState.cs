@@ -34,21 +34,6 @@ public class EnemyPatrolState : State<EnemyStates>
         MoveWithAvoidance();
     }
 
-    private void Patrol()
-    { 
-
-        if (Vector3.Distance(fsm.transform.position, fsm.wayPoints[currentWP].position) > 1f) //Si la distancia es mayor a 1, estan lejos todavia
-        {
-            Flocking(fsm.wayPoints[currentWP].position); //Se acercan al waypoint asignado
-        }
-        else
-        {
-            currentWP = ChooseNextWaypoint(); //Si no, van al próximo.
-        }
-        
-        SawTheTarget(); //Si ven al player cambia su estado
-    }
-
     private void ThetaPatrol()
     {
         if (path != null)
@@ -137,16 +122,6 @@ public class EnemyPatrolState : State<EnemyStates>
         fsm.transform.position += moveVelocity * Time.deltaTime;
         fsm._velocity.y = 0;
     }
-
-    private int ChooseNextWaypoint()
-    {
-        var weights = SetWeights(currentWP,fsm.wayPoints);
-
-        Transform next = MyRandom.RouletteWheelSelection(weights);
-
-        return Array.IndexOf(fsm.wayPoints,next);
-    }
-
     private PF_WNode ChooseNextNode()
     {
 
@@ -165,46 +140,13 @@ public class EnemyPatrolState : State<EnemyStates>
         return selected;
     }
 
-
-
-    private Dictionary<Transform, float> SetWeights(int currentIndex, Transform[] waypoints)
-    {
-        Dictionary<Transform, float> weights = new();
-
-        Transform current = waypoints[currentIndex];
-
-        for (int i = 0; i < waypoints.Length; i++)
-        {
-            if (i == currentIndex)
-                continue;
-
-            Transform wp = waypoints[i];
-
-            float dist =
-                Vector3.Distance(current.position, wp.position);
-
-            dist = Mathf.Max(dist,0.01f);
-
-            // peso segun distancia
-            float weight = 1f / dist;
-
-            if (Mathf.Abs(i - currentIndex) == 1)
-            {
-                weight *= 2f;
-            }
-
-            weights.Add(wp,weight);
-        }
-
-        return weights;
-    }
-
     private void SawTheTarget()
     {
         if (fsm.ViewLoS.CheckView(fsm.targetTransform) &&
             fsm.ViewLoS.CheckRange(fsm.targetTransform) &&
             fsm.ViewLoS.CheckAngle(fsm.targetTransform))
         {
+            fsm.rend.material.color = fsm.specificSeeColor;
             _sm.ChangeState(EnemyStates.SpecificSee);
         }
     }

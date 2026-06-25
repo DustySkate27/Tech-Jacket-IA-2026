@@ -87,6 +87,8 @@ public class EnemyEvadeState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 30f)
         {
+            fsm.rend.material.color = fsm.fleeColor;
+            fsm.currentMesh.mesh = fsm.fleeMesh;
             _sm.ChangeState(EnemyStates.Flee);
         }
     }

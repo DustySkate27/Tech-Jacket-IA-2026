@@ -87,6 +87,7 @@ public class EnemyPursuitState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) < fsm.specificLoS.range)
         {
+            fsm.rend.material.color = fsm.arriveColor;
             _sm.ChangeState(EnemyStates.Arrive);
         }
     }

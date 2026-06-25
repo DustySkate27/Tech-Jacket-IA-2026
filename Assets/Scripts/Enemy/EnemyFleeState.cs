@@ -73,6 +73,8 @@ public class EnemyFleeState : State<EnemyStates>
     {
         if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 50f)
         {
+            fsm.rend.material.color = fsm.idleColor;
+            fsm.currentMesh.mesh = fsm.baseMesh;
             _sm.ChangeState(EnemyStates.Idle);
         }
     }

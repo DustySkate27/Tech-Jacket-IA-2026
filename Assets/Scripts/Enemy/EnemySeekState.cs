@@ -33,6 +33,7 @@ public class EnemySeekState : State<EnemyStates>
         }
         else
         {
+            fsm.rend.material.color = fsm.patrolColor;
             _sm.ChangeState(EnemyStates.Patrol);
         }
     }
@@ -44,6 +45,8 @@ public class EnemySeekState : State<EnemyStates>
             fsm.specificLoS.CheckAngle(fsm.targetTransform))
         {
             fsm.specificLoS.range = baseRange;
+            fsm.rend.material.color = fsm.pursuitColor;
+            fsm.currentMesh.mesh = fsm.pursuitMesh;
             _sm.ChangeState(EnemyStates.Pursuit);
         }
     }
