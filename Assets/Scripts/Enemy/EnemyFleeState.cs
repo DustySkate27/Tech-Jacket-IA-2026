@@ -71,7 +71,7 @@ public class EnemyFleeState : State<EnemyStates>
 
     private void TargetDistanceCheck()
     {
-        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 50f)
+        if (Vector3.Distance(fsm.transform.position, fsm.target.position) > 30f)
         {
             fsm.rend.material.color = fsm.idleColor;
             _sm.ChangeState(EnemyStates.Fatigue);
