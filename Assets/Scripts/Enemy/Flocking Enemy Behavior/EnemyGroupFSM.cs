@@ -56,9 +56,7 @@ public class EnemyGroupFSM : MonoBehaviour
     {
         myTransform = transform;
 
-        currentMesh = GetComponent<MeshFilter>();
         baseMesh = currentMesh.mesh;
-        rend = GetComponent<MeshRenderer>();
 
         _obstacleAvoidance = new ObstacleAvoidance(
             myTransform,

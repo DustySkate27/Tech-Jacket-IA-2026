@@ -84,9 +84,7 @@ public class EnemyFSM : MonoBehaviour
     private void Awake()
     {
         myTransform = transform;
-        currentMesh = GetComponent<MeshFilter>();
         baseMesh = currentMesh.mesh;
-        rend = GetComponent<MeshRenderer>();
         idleColor = rend.material.color;
 
         _obstacleAvoidance = new ObstacleAvoidance(
